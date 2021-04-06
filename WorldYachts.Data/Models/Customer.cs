@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WorldYachtsApi.Models
+namespace WorldYachts.Data.Models
 {
     public class Customer
     {
@@ -12,10 +12,7 @@ namespace WorldYachtsApi.Models
         /// </summary>
         [Required]
         public int Id { get; set; }
-        /// <summary>
-        /// Является ли предмет удаленным
-        /// </summary>
-        [Required] public bool IsDeleted { get; set; }
+        
         /// <summary>
         /// Имя клиента
         /// </summary>

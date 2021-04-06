@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using WorldYachts.Data.Models;
 
-namespace WorldYachtsApi.Models
+namespace WorldYachts.Data.Models
 {
     public class Accessory
     {
@@ -42,11 +43,6 @@ namespace WorldYachtsApi.Models
         /// Идентификатор партнера
         /// </summary>
         [Required] public int PartnerId { get; set; }
-
-        /// <summary>
-        /// Является ли предмет удаленным
-        /// </summary>
-        [Required] public bool IsDeleted { get; set; }
 
         [ForeignKey("PartnerId")]
         public Partner Partner { get; set; }

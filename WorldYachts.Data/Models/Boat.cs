@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WorldYachtsApi.Models
+namespace WorldYachts.Data.Models
 {
     public class Boat
     {
@@ -11,10 +11,7 @@ namespace WorldYachtsApi.Models
         /// </summary>
         [Required]
         public int Id { get; set; }
-        /// <summary>
-        /// Является ли предмет удаленным
-        /// </summary>
-        [Required] public bool IsDeleted { get; set; }
+        
         /// <summary>
         /// Модель яхты
         /// </summary>

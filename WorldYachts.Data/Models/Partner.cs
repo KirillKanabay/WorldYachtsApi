@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace WorldYachtsApi.Models
+namespace WorldYachts.Data.Models
 {
     public class Partner
     {

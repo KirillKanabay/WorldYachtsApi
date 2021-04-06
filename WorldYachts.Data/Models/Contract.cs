@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WorldYachtsApi.Models
+namespace WorldYachts.Data.Models
 {
     public class Contract
     {
@@ -10,10 +10,7 @@ namespace WorldYachtsApi.Models
         /// Идентификатор заказа
         /// </summary>
         [Required] public int Id { get; set; }
-        /// <summary>
-        /// Является ли предмет удаленным
-        /// </summary>
-        [Required] public bool IsDeleted { get; set; }
+        
         /// <summary>
         /// Идентификатор доставки
         /// </summary>

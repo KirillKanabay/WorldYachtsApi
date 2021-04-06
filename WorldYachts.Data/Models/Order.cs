@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace WorldYachtsApi.Models
+namespace WorldYachts.Data.Models
 {
     public class Order 
     {
@@ -11,10 +11,7 @@ namespace WorldYachtsApi.Models
         /// </summary>
         [Required]
         public int Id { get; set; }
-        /// <summary>
-        /// Является ли предмет удаленным
-        /// </summary>
-        [Required] public bool IsDeleted { get; set; }
+        
         /// <summary>
         /// Идентификатор заказчика
         /// </summary>
