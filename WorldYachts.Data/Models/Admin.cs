@@ -1,20 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace WorldYachts.Data.Models
 {
     public class Admin
     {
-        /// <summary>
-        /// Идентификатор администратора
-        /// </summary>
-        public int Id { get; set; }
-        /// <summary>
-        /// Имя администратора
-        /// </summary>
+        [Required]
+        public long Id { get; set; }
+        [Required]
         public string Name { get; set; }
-        /// <summary>
-        /// Фамилия администратора
-        /// </summary>
+        [Required]
         public string SecondName { get; set; }
     }
 }

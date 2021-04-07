@@ -8,6 +8,7 @@ namespace WorldYachts.Data.Models
         /// <summary>
         /// Идентификатор партнера
         /// </summary>
+        [Required]
         public int Id { get; set; }
         
         /// <summary>

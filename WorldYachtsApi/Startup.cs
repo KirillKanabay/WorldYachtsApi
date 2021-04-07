@@ -1,21 +1,14 @@
- using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
- using Microsoft.AspNetCore.Authentication.JwtBearer;
- using Microsoft.EntityFrameworkCore;
- using WorldYachtsApi.Data;
- using WorldYachtsApi.Middlewares;
- using WorldYachtsApi.Serialization;
- using WorldYachtsApi.Services;
+using Microsoft.EntityFrameworkCore;
+using WorldYachts.Data;
+using WorldYachts.Services.SalesPerson;
+using WorldYachts.Services.User;
+using WorldYachtsApi.Middlewares;
+using WorldYachtsApi.Serialization;
 
  namespace WorldYachtsApi
 {
@@ -35,11 +28,9 @@ using System.Threading.Tasks;
             services.AddDbContext<WorldYachtsDbContext>(option =>
             {
                 option.EnableDetailedErrors();
-                option.UseSqlServer(Configuration.GetConnectionString("Default"));
+                option.UseSqlServer(Configuration.GetConnectionString("Default"), 
+                    b => b.MigrationsAssembly("WorldYachtsApi"));
             });
-
-            //Репозиторий работы с EF
-            services.AddScoped(typeof(IEfRepository<>), typeof(UserRepository<>));
 
             //Маппер пользователей
             services.AddAutoMapper(typeof(UserMapper));
@@ -52,9 +43,14 @@ using System.Threading.Tasks;
             
             //Сервис кэширования ответов
             services.AddResponseCaching();
-            
-            //Сервис работы с пользователями
+
+            #region Сервисы работы со сущностями
+
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ISalesPersonService, SalesPersonService>();
+
+            #endregion
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

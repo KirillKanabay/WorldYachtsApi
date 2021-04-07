@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using WorldYachtsApi.Services;
+using WorldYachts.Services.User;
 
 namespace WorldYachtsApi.Middlewares
 {

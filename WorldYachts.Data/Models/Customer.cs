@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
 
 namespace WorldYachts.Data.Models
 {
@@ -12,7 +12,7 @@ namespace WorldYachts.Data.Models
         /// </summary>
         [Required]
         public int Id { get; set; }
-        
+
         /// <summary>
         /// Имя клиента
         /// </summary>
@@ -71,7 +71,5 @@ namespace WorldYachts.Data.Models
         /// </summary>
         [Required]
         public string IdDocumentName { get; set; }
-
-        [ForeignKey("CustomerId")] public List<Order> Orders { get; set; }
     }
 }

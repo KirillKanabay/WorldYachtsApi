@@ -2,7 +2,8 @@
 using System;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
-using WorldYachtsApi.Data;
+using WorldYachts.Data;
+using WorldYachts.Data.Models;
 using WorldYachtsApi.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860

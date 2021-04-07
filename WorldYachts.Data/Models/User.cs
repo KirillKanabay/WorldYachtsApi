@@ -4,21 +4,17 @@ namespace WorldYachts.Data.Models
 {
     public class User
     {
-        /// <summary>
-        /// Идентификатор пользователя
-        /// </summary>
-        [Required] public int Id { get; set; }
-        /// <summary>
-        /// Тип пользователя
-        /// </summary>
-        [Required] public int TypeUser { get; set; }
-        /// <summary>
-        /// Логин пользователя
-        /// </summary>
-        [Required] public string Login { get; set; }
-        /// <summary>
-        /// Id пользователя
-        /// </summary>
-        [Required] public int UserId { get; set; }
+        [Required]
+        public long Id { get; set; }
+        [Required]
+        public string Username { get; set; }
+        [Required]
+        public string Email { get; set; }
+        [Required]
+        public string Password { get; set; }
+        [Required]
+        public string Role { get; set; }
+        [Required]
+        public long UserId { get; set; }
     }
 }

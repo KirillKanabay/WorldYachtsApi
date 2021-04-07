@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using WorldYachtsApi.Entities;
-using WorldYachtsApi.Models;
-using WorldYachtsApi.Models.Authenticate;
+﻿using AutoMapper;
+using WorldYachts.Data.Models;
+using WorldYachts.Services.Models;
+
 
 namespace WorldYachtsApi.Serialization
 {
@@ -13,24 +9,44 @@ namespace WorldYachtsApi.Serialization
     {
         public UserMapper()
         {
-            CreateMap<UserModel, User>()
-                .ForMember(dst => dst.Email, opt => opt.MapFrom(src => src.Email))
-                .ForMember(dst => dst.Username, opt => opt.MapFrom(src => src.Username))
-                .ForMember(dst => dst.Password, opt => opt.MapFrom(src => src.Password))
-                .ForMember(dst => dst.FirstName, opt => opt.MapFrom(src => src.FirstName))
-                .ForMember(dst => dst.LastName, opt => opt.MapFrom(src => src.LastName))
-                .ForMember(dst => dst.Patronymic, opt => opt.MapFrom(src => src.Patronymic))
-                .ForMember(dst => dst.Id, opt => opt.Ignore())
+            //CustomerModel -> Customer
+            CreateMap<CustomerModel, Customer>()
+                .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dst => dst.SecondName, opt => opt.MapFrom(src => src.SecondName))
+                .ForMember(dst => dst.BirthDate, opt => opt.MapFrom(src => src.BirthDate))
+                .ForMember(dst => dst.Address, opt => opt.MapFrom(src=>src.Address))
+                .ForMember(dst => dst.City, opt => opt.MapFrom(src=>src.City))
+                .ForMember(dst => dst.Phone, opt => opt.MapFrom(src=>src.Phone))
+                .ForMember(dst => dst.Email, opt => opt.MapFrom(src=>src.Email))
+                .ForMember(dst => dst.OrganizationName, opt => opt.MapFrom(src=>src.OrganizationName))
+                .ForMember(dst => dst.IdNumber, opt => opt.MapFrom(src=>src.IdNumber))
+                .ForMember(dst => dst.IdDocumentName, opt => opt.MapFrom(src=>src.IdDocumentName))
                 ;
 
-            CreateMap<User, AuthenticateResponse>()
+            //CustomerModel -> User
+            CreateMap<CustomerModel, User>()
+                .ForMember(dst => dst.Username, opt => opt.MapFrom(src => src.Username))
                 .ForMember(dst => dst.Email, opt => opt.MapFrom(src => src.Email))
-                .ForMember(dst => dst.Username, opt => opt.MapFrom(src => src.Email))
-                .ForMember(dst => dst.FirstName, opt => opt.MapFrom(src => src.Email))
-                .ForMember(dst => dst.LastName, opt => opt.MapFrom(src => src.Email))
-                .ForMember(dst => dst.Patronymic, opt => opt.MapFrom(src => src.Email))
-                .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dst => dst.Token, opt => opt.Ignore())
+                .ForMember(dst => dst.Password, opt => opt.MapFrom(src => src.Password))
+                .ForMember(dst => dst.Role, opt => opt.MapFrom(src => src.Role))
+                .ForMember(dst => dst.UserId, opt => opt.MapFrom(src => src.Id))
+                ;
+
+            //SalesPersonModel -> SalesPerson
+            CreateMap<SalesPersonModel, SalesPerson>()
+                .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dst => dst.SecondName, opt => opt.MapFrom(src => src.SecondName))
+                .ForMember(dst => dst.Email, opt => opt.MapFrom(src => src.Email))
+                ;
+
+            //SalesPersonModel -> User
+            CreateMap<SalesPersonModel, User>()
+                .ForMember(dst => dst.Username, opt => opt.MapFrom(src => src.Username))
+                .ForMember(dst => dst.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dst => dst.Password, opt => opt.MapFrom(src => src.Password))
+                .ForMember(dst => dst.Role, opt => opt.MapFrom(src => src.Role))
+                .ForMember(dst => dst.UserId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.Id, opt=> opt.Ignore())
                 ;
         }
     }
