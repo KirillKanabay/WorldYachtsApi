@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using WorldYachts.Data;
+using WorldYachts.Services.Customer;
 using WorldYachts.Services.Helpers;
 using WorldYachts.Services.Models;
 using WorldYachts.Services.Models.Authenticate;
@@ -21,14 +22,20 @@ namespace WorldYachts.Services.User
         private readonly IMapper _mapper;
         private readonly WorldYachtsDbContext _dbContext;
         private readonly ISalesPersonService _salesPersonService;
+        private readonly ICustomerService _customerService;
         #endregion
 
-        public UserService(WorldYachtsDbContext dbContext,IConfiguration configuration, IMapper mapper, ISalesPersonService salesPersonService)
+        public UserService(WorldYachtsDbContext dbContext,
+            IConfiguration configuration, 
+            IMapper mapper, 
+            ISalesPersonService salesPersonService,
+            ICustomerService customerService)
         {
             _configuration = configuration;
             _mapper = mapper;
             _dbContext = dbContext;
             _salesPersonService = salesPersonService;
+            _customerService = customerService;
         }
 
         /// <summary>
@@ -63,12 +70,12 @@ namespace WorldYachts.Services.User
         public async Task<AuthenticateResponse> Register(CustomerModel customerModel)
         {
             var customer = _mapper.Map<Data.Models.Customer>(customerModel);
-            var addedCustomer = await _dbContext.Customers.AddAsync(customer);
+            var addedCustomer = await _customerService.Add(customer);
 
-            customerModel.Id = addedCustomer.Entity.Id;
+            customerModel.Id = addedCustomer.Id;
 
             var user = _mapper.Map<Data.Models.User>(customerModel);
-            var addedUser = await _dbContext.Users.AddAsync(user);
+            var addedUser = await Add(user);
 
 
             var response = Authenticate(new AuthenticateRequest

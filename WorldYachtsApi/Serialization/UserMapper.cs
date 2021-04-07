@@ -30,6 +30,7 @@ namespace WorldYachtsApi.Serialization
                 .ForMember(dst => dst.Password, opt => opt.MapFrom(src => src.Password))
                 .ForMember(dst => dst.Role, opt => opt.MapFrom(src => src.Role))
                 .ForMember(dst => dst.UserId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dst => dst.Id, opt => opt.Ignore())
                 ;
 
             //SalesPersonModel -> SalesPerson
