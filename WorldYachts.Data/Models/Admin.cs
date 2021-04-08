@@ -8,7 +8,7 @@ namespace WorldYachts.Data.Models
     public class Admin
     {
         [Required]
-        public long Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -40,19 +41,23 @@ namespace WorldYachts.Services.Customer
 
         public async Task<Data.Models.Customer> GetById(int id)
         {
-            return await _dbContext.Customers.FirstOrDefaultAsync(c => c.Id == id);
+            return await _dbContext.Customers.FindAsync(id);
         }
 
         public async Task<AuthenticateResponse> Register(CustomerModel customerModel)
         {
             var customer = _mapper.Map<Data.Models.Customer>(customerModel);
-            var addedCustomer = await Add(customer);
-
-            customerModel.Id = addedCustomer.Id;
-
             var user = _mapper.Map<Data.Models.User>(customerModel);
-            var addedUser = await _userService.Add(user);
 
+            if (await IsIdenticalEntity(customer) ||
+                  await _userService.IsIdenticalEntity(user))
+            {
+                return null;
+            }
+            var addedCustomer = await Add(customer);
+            
+            user.UserId = addedCustomer.Id;
+            var addedUser = await _userService.Add(user);
 
             var response = _userService.Authenticate(new AuthenticateRequest
             {
@@ -61,6 +66,18 @@ namespace WorldYachts.Services.Customer
             });
 
             return response;
+        }
+
+        public async Task<bool> IsIdenticalEntity(Data.Models.Customer customer)
+        {
+            if (await _dbContext.Customers.AnyAsync(
+                c => c.Email.ToLower() == customer.Email.ToLower()
+                || c.IdNumber.ToLower() == customer.IdNumber.ToLower()))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

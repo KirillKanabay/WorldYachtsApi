@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using WorldYachts.Data;
 using WorldYachts.Services.Customer;
@@ -27,10 +28,7 @@ namespace WorldYachts.Services.User
             IMapper mapper)
         {
             _configuration = configuration;
-            _mapper = mapper;
             _dbContext = dbContext;
-            _salesPersonService = salesPersonService;
-            _customerService = customerService;
         }
 
         /// <summary>
@@ -85,6 +83,18 @@ namespace WorldYachts.Services.User
         public Data.Models.User GetById(int id)
         {
             return _dbContext.Users.FirstOrDefault(u => u.Id == id);
+        }
+
+        public async Task<bool> IsIdenticalEntity(Data.Models.User user)
+        {
+            if (await _dbContext.Users.AnyAsync(
+                c => c.Email.ToLower() == user.Email.ToLower()
+                     || c.Username.ToLower() == user.Username.ToLower()))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

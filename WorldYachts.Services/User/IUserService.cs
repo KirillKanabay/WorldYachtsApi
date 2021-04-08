@@ -14,5 +14,6 @@ namespace WorldYachts.Services.User
         Task<Data.Models.User> Add(Data.Models.User user);
         IEnumerable<Data.Models.User> GetAll();
         Data.Models.User GetById(int id);
+        Task<bool> IsIdenticalEntity(Data.Models.User user);
     }
 }

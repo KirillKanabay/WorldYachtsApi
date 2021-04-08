@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using WorldYachts.Services.Admin;
 using WorldYachts.Services.Customer;
 using WorldYachts.Services.Models;
 using WorldYachts.Services.Models.Authenticate;
@@ -17,12 +21,17 @@ namespace WorldYachtsApi.Controllers
         private readonly IUserService _userService;
         private readonly ISalesPersonService _salesPersonService;
         private readonly ICustomerService _customerService;
+        private readonly IAdminService _adminService;
 
-        public UsersController(IUserService userService, ISalesPersonService salesPersonService, ICustomerService customerService)
+        public UsersController(IUserService userService, 
+            ISalesPersonService salesPersonService, 
+            ICustomerService customerService,
+            IAdminService adminService)
         {
             _userService = userService;
             _salesPersonService = salesPersonService;
             _customerService = customerService;
+            _adminService = adminService;
         }
 
         [HttpPost("authenticate")]
@@ -66,11 +75,43 @@ namespace WorldYachtsApi.Controllers
         }
         #endregion
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var user = _userService.GetById(id);
+            
+            if (user == null)
+            {
+                return NotFound("No record found against this id");
+            }
+
+            switch (user.Role)
+            {
+                case "Customer":
+                    return Ok(await _customerService.GetById(user.UserId));
+                case "Sales Person":
+                    return Ok(await _salesPersonService.GetById(user.UserId));
+                case "Admin":
+                    return Ok(await _adminService.GetById(user.UserId));
+                default:
+                    return NotFound("No record found against this id");
+            }
+        }
+        
+
         [Authorize]
         [HttpGet]
         public IActionResult GetAll()
         {
-            var users = _userService.GetAll();
+            var salesPersons = _salesPersonService.GetAll().ToList();
+            var admins = _adminService.GetAll().ToList();
+            var customers = _customerService.GetAll().ToList();
+
+            List<object> users = new List<object>()
+            {
+                salesPersons, admins, customers
+            };
+
             return Ok(users);
         }
     }

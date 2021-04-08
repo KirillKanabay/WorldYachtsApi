@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using WorldYachts.Data;
+using WorldYachts.Services.Admin;
 using WorldYachts.Services.Customer;
 using WorldYachts.Services.SalesPerson;
 using WorldYachts.Services.User;
@@ -50,6 +51,7 @@ using WorldYachtsApi.Serialization;
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISalesPersonService, SalesPersonService>();
             services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<IAdminService, AdminService>();
 
             #endregion
 

@@ -28,7 +28,7 @@ namespace WorldYachtsApi.Helpers
             else
             {
                 var role = user.Role;
-                if (!(_roles.Contains(role) && _roles.Length > 0))
+                if (!(_roles.Contains(role)) && _roles.Length > 0)
                 {
                     context.Result = new JsonResult(new { message = "Access denied" }) { StatusCode = StatusCodes.Status403Forbidden };
                 }

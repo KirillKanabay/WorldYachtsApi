@@ -5,7 +5,7 @@ namespace WorldYachts.Data.Models
     public class User
     {
         [Required]
-        public long Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public string Username { get; set; }
         [Required]
@@ -15,6 +15,6 @@ namespace WorldYachts.Data.Models
         [Required]
         public string Role { get; set; }
         [Required]
-        public long UserId { get; set; }
+        public int UserId { get; set; }
     }
 }

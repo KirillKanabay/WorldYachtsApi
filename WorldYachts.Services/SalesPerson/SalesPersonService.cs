@@ -40,18 +40,21 @@ namespace WorldYachts.Services.SalesPerson
 
         public async Task<Data.Models.SalesPerson> GetById(int id)
         {
-            return await _dbContext.SalesPersons.FirstOrDefaultAsync(sp => sp.Id == id);
+            return await _dbContext.SalesPersons.FindAsync(id);
         }
 
         public async Task<AuthenticateResponse> Register(SalesPersonModel salesPersonModel)
         {
             var salesPerson = _mapper.Map<Data.Models.SalesPerson>(salesPersonModel);
-
+            var user = _mapper.Map<Data.Models.User>(salesPersonModel);
+            if (await IsIdenticalEntity(salesPerson)
+                || await _userService.IsIdenticalEntity(user))
+            {
+                return null;
+            }
             var addedSalesPerson = await Add(salesPerson);
 
-            salesPersonModel.Id = addedSalesPerson.Id;
-
-            var user = _mapper.Map<Data.Models.User>(salesPersonModel);
+            user.UserId = addedSalesPerson.Id;
             var addedUser = await _userService.Add(user);
 
             var response = _userService.Authenticate(new AuthenticateRequest
@@ -61,6 +64,16 @@ namespace WorldYachts.Services.SalesPerson
             });
 
             return response;
+        }
+
+        public async Task<bool> IsIdenticalEntity(Data.Models.SalesPerson salesPerson)
+        {
+            if (await _dbContext.SalesPersons.AnyAsync(sp => sp.Email.ToLower() == salesPerson.Email.ToLower()))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

@@ -13,5 +13,6 @@ namespace WorldYachts.Services.SalesPerson
         IEnumerable<WorldYachts.Data.Models.SalesPerson> GetAll();
         Task<Data.Models.SalesPerson> GetById(int id);
         Task<AuthenticateResponse> Register(SalesPersonModel salesPersonModel);
+        Task<bool> IsIdenticalEntity(Data.Models.SalesPerson salesPerson);
     }
 }
