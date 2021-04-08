@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using WorldYachts.Services.Customer;
 using WorldYachts.Services.Models;
 using WorldYachts.Services.Models.Authenticate;
+using WorldYachts.Services.SalesPerson;
 using WorldYachts.Services.User;
 using WorldYachtsApi.Helpers;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WorldYachtsApi.Controllers
 {
@@ -14,10 +15,14 @@ namespace WorldYachtsApi.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly ISalesPersonService _salesPersonService;
+        private readonly ICustomerService _customerService;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserService userService, ISalesPersonService salesPersonService, ICustomerService customerService)
         {
             _userService = userService;
+            _salesPersonService = salesPersonService;
+            _customerService = customerService;
         }
 
         [HttpPost("authenticate")]
@@ -36,7 +41,7 @@ namespace WorldYachtsApi.Controllers
         [HttpPost("register/customer")]
         public async Task<IActionResult> Register(CustomerModel customerModel)
         {
-            var response = await _userService.Register(customerModel);
+            var response = await _customerService.Register(customerModel);
 
             if (response == null)
             {
@@ -50,7 +55,7 @@ namespace WorldYachtsApi.Controllers
         [Authorize("Admin")]
         public async Task<IActionResult> Register(SalesPersonModel salesPersonModel)
         {
-            var response = await _userService.Register(salesPersonModel);
+            var response = await _salesPersonService.Register(salesPersonModel);
 
             if (response == null)
             {

@@ -2,17 +2,27 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using WorldYachts.Data;
+using WorldYachts.Services.Models;
+using WorldYachts.Services.Models.Authenticate;
+using WorldYachts.Services.User;
+using WorldYachtsApi.Models.Authenticate;
 
 namespace WorldYachts.Services.Customer
 {
     public class CustomerService : ICustomerService
     {
         private readonly WorldYachtsDbContext _dbContext;
-        public CustomerService(WorldYachtsDbContext dbContext)
+        private readonly IUserService _userService;
+        private readonly IMapper _mapper;
+
+        public CustomerService(WorldYachtsDbContext dbContext, IUserService userService, IMapper mapper)
         {
             _dbContext = dbContext;
+            _userService = userService;
+            _mapper = mapper;
         }
 
         public async Task<Data.Models.Customer> Add(Data.Models.Customer customer)
@@ -31,6 +41,26 @@ namespace WorldYachts.Services.Customer
         public async Task<Data.Models.Customer> GetById(int id)
         {
             return await _dbContext.Customers.FirstOrDefaultAsync(c => c.Id == id);
+        }
+
+        public async Task<AuthenticateResponse> Register(CustomerModel customerModel)
+        {
+            var customer = _mapper.Map<Data.Models.Customer>(customerModel);
+            var addedCustomer = await Add(customer);
+
+            customerModel.Id = addedCustomer.Id;
+
+            var user = _mapper.Map<Data.Models.User>(customerModel);
+            var addedUser = await _userService.Add(user);
+
+
+            var response = _userService.Authenticate(new AuthenticateRequest
+            {
+                Username = user.Username,
+                Password = user.Password
+            });
+
+            return response;
         }
     }
 }

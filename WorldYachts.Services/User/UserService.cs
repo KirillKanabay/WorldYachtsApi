@@ -19,17 +19,12 @@ namespace WorldYachts.Services.User
     {
         #region Поля
         private readonly IConfiguration _configuration;
-        private readonly IMapper _mapper;
         private readonly WorldYachtsDbContext _dbContext;
-        private readonly ISalesPersonService _salesPersonService;
-        private readonly ICustomerService _customerService;
         #endregion
 
         public UserService(WorldYachtsDbContext dbContext,
             IConfiguration configuration, 
-            IMapper mapper, 
-            ISalesPersonService salesPersonService,
-            ICustomerService customerService)
+            IMapper mapper)
         {
             _configuration = configuration;
             _mapper = mapper;
@@ -60,60 +55,6 @@ namespace WorldYachts.Services.User
             return new AuthenticateResponse(user, token);
         }
 
-        #region Регистрации пользователей
-
-        /// <summary>
-        /// Регистрация покупателя
-        /// </summary>
-        /// <param name="customerModel"></param>
-        /// <returns></returns>
-        public async Task<AuthenticateResponse> Register(CustomerModel customerModel)
-        {
-            var customer = _mapper.Map<Data.Models.Customer>(customerModel);
-            var addedCustomer = await _customerService.Add(customer);
-
-            customerModel.Id = addedCustomer.Id;
-
-            var user = _mapper.Map<Data.Models.User>(customerModel);
-            var addedUser = await Add(user);
-
-
-            var response = Authenticate(new AuthenticateRequest
-            {
-                Username = user.Username,
-                Password = user.Password
-            });
-
-            return response;
-        }
-
-        /// <summary>
-        /// Регистрация менеджера
-        /// </summary>
-        /// <param name="salesPersonModel"></param>
-        /// <returns></returns>
-        public async Task<AuthenticateResponse> Register(SalesPersonModel salesPersonModel)
-        {
-            var salesPerson = _mapper.Map<Data.Models.SalesPerson>(salesPersonModel);
-
-            var addedSalesPerson = await _salesPersonService.Add(salesPerson);
-
-            salesPersonModel.Id = addedSalesPerson.Id;
-
-            var user = _mapper.Map<Data.Models.User>(salesPersonModel);
-            var addedUser = await Add(user);
-
-            var response = Authenticate(new AuthenticateRequest
-            {
-                Username = user.Username,
-                Password = user.Password
-            });
-
-            return response;
-        }
-
-        #endregion
-        
         /// <summary>
         /// Добавление пользователя
         /// </summary>

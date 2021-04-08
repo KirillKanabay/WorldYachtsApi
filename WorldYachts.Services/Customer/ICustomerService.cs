@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using WorldYachts.Services.Models;
+using WorldYachtsApi.Models.Authenticate;
 
 namespace WorldYachts.Services.Customer
 {
@@ -10,5 +12,6 @@ namespace WorldYachts.Services.Customer
         Task<Data.Models.Customer> Add(Data.Models.Customer customer);
         IEnumerable<WorldYachts.Data.Models.Customer> GetAll();
         Task<Data.Models.Customer> GetById(int id);
+        Task<AuthenticateResponse> Register(CustomerModel customerModel);
     }
 }
