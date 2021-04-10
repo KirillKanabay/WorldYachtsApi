@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
-namespace WorldYachts.Data.Models
+namespace WorldYachts.Data.Entities
 {
-    public class Customer
+    public class Customer : BaseEntity
     {
-        /// <summary>
-        /// Идентификатор клиента
-        /// </summary>
-        [Required]
-        public int Id { get; set; }
-
         /// <summary>
         /// Имя клиента
         /// </summary>

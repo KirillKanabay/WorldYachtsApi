@@ -1,6 +1,4 @@
-﻿using WorldYachts.Data.Models;
-
-namespace WorldYachtsApi.Models.Authenticate
+﻿namespace WorldYachts.Services.Models.Authenticate
 {
     public class AuthenticateResponse
     {
@@ -10,7 +8,7 @@ namespace WorldYachtsApi.Models.Authenticate
         public string Role { get; set; }
         public string Token { get; set; }
 
-        public AuthenticateResponse(User user, string token)
+        public AuthenticateResponse(Data.Entities.User user, string token)
         {
             Id = user.Id;
             Username = user.Username;

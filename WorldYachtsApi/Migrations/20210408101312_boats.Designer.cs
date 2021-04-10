@@ -10,8 +10,8 @@ using WorldYachts.Data;
 namespace WorldYachtsApi.Migrations
 {
     [DbContext(typeof(WorldYachtsDbContext))]
-    [Migration("20210408070305_changeLongToInt")]
-    partial class changeLongToInt
+    [Migration("20210408101312_boats")]
+    partial class boats
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,62 @@ namespace WorldYachtsApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.4")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("WorldYachts.Data.Models.Accessory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Inventory")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PartnerId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<double>("Vat")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartnerId");
+
+                    b.ToTable("Accessories");
+                });
+
+            modelBuilder.Entity("WorldYachts.Data.Models.AccessoryToBoat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AccessoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BoatId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccessoryId");
+
+                    b.HasIndex("BoatId");
+
+                    b.ToTable("AccessoryToBoats");
+                });
 
             modelBuilder.Entity("WorldYachts.Data.Models.Admin", b =>
                 {
@@ -39,6 +95,49 @@ namespace WorldYachtsApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Admins");
+                });
+
+            modelBuilder.Entity("WorldYachts.Data.Models.Boat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("BasePrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Mast")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Model")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NumberOfRowers")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Vat")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Wood")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Boats");
                 });
 
             modelBuilder.Entity("WorldYachts.Data.Models.Customer", b =>
@@ -174,6 +273,46 @@ namespace WorldYachtsApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("WorldYachts.Data.Models.Accessory", b =>
+                {
+                    b.HasOne("WorldYachts.Data.Models.Partner", "Partner")
+                        .WithMany()
+                        .HasForeignKey("PartnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Partner");
+                });
+
+            modelBuilder.Entity("WorldYachts.Data.Models.AccessoryToBoat", b =>
+                {
+                    b.HasOne("WorldYachts.Data.Models.Accessory", "Accessory")
+                        .WithMany("AccessoryToBoat")
+                        .HasForeignKey("AccessoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WorldYachts.Data.Models.Boat", "Boat")
+                        .WithMany("AccessoryToBoat")
+                        .HasForeignKey("BoatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Accessory");
+
+                    b.Navigation("Boat");
+                });
+
+            modelBuilder.Entity("WorldYachts.Data.Models.Accessory", b =>
+                {
+                    b.Navigation("AccessoryToBoat");
+                });
+
+            modelBuilder.Entity("WorldYachts.Data.Models.Boat", b =>
+                {
+                    b.Navigation("AccessoryToBoat");
                 });
 #pragma warning restore 612, 618
         }

@@ -7,7 +7,7 @@ namespace WorldYachts.Services.Admin
 {
     public interface IAdminService
     {
-        IEnumerable<WorldYachts.Data.Models.Admin> GetAll();
-        Task<Data.Models.Admin> GetById(int id);
+        IEnumerable<Data.Entities.Admin> GetAll();
+        Task<Data.Entities.Admin> GetById(int id);
     }
 }

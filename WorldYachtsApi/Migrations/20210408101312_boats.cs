@@ -2,7 +2,7 @@
 
 namespace WorldYachtsApi.Migrations
 {
-    public partial class addedAdmin : Migration
+    public partial class boats : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -3,8 +3,7 @@ using System;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using WorldYachts.Data;
-using WorldYachts.Data.Models;
-using WorldYachtsApi.Models;
+using WorldYachts.Data.Entities;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -26,19 +25,12 @@ namespace WorldYachtsApi.Controllers
         [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
         public IActionResult Get(string sort)
         {
-            IQueryable<Partner> partners;
-            switch (sort)
+            IQueryable<Partner> partners = sort switch
             {
-                case "desc":
-                    partners = _dbContext.Partners.OrderByDescending(p => p.CreatedAt);
-                    break;
-                case "asc":
-                    partners = _dbContext.Partners.OrderBy(p => p.CreatedAt);
-                    break;
-                default:
-                    partners = _dbContext.Partners;
-                    break;
-            }
+                "desc" => _dbContext.Partners.OrderByDescending(p => p.CreatedAt),
+                "asc" => _dbContext.Partners.OrderBy(p => p.CreatedAt),
+                _ => _dbContext.Partners
+            };
 
             return Ok(partners);
         }

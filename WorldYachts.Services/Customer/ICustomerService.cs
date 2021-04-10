@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using WorldYachts.Services.Models;
-using WorldYachtsApi.Models.Authenticate;
+using WorldYachts.Services.Models.Authenticate;
 
 namespace WorldYachts.Services.Customer
 {
     public interface ICustomerService
     {
-        Task<Data.Models.Customer> Add(Data.Models.Customer customer);
-        IEnumerable<WorldYachts.Data.Models.Customer> GetAll();
-        Task<Data.Models.Customer> GetById(int id);
+        Task<Data.Entities.Customer> Add(Data.Entities.Customer customer);
+        IEnumerable<Data.Entities.Customer> GetAll();
+        Task<Data.Entities.Customer> GetById(int id);
         Task<AuthenticateResponse> Register(CustomerModel customerModel);
-        Task<bool> IsIdenticalEntity(Data.Models.Customer customer);
+        Task<bool> IsIdenticalEntity(Data.Entities.Customer customer);
     }
 }

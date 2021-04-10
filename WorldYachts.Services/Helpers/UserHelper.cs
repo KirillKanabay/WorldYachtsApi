@@ -9,7 +9,7 @@ namespace WorldYachts.Services.Helpers
 {
     public static class UserHelper
     {
-        public static string GenerateJwtToken(this IConfiguration configuration, Data.Models.User user)
+        public static string GenerateJwtToken(this IConfiguration configuration, Data.Entities.User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(configuration["Secret"]);

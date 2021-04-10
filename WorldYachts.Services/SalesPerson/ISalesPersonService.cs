@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using WorldYachts.Data.Models;
 using WorldYachts.Services.Models;
-using WorldYachtsApi.Models.Authenticate;
+using WorldYachts.Services.Models.Authenticate;
 
 namespace WorldYachts.Services.SalesPerson
 {
     public interface ISalesPersonService
     {
-        Task<Data.Models.SalesPerson> Add(Data.Models.SalesPerson salesPerson);
-        IEnumerable<WorldYachts.Data.Models.SalesPerson> GetAll();
-        Task<Data.Models.SalesPerson> GetById(int id);
+        Task<Data.Entities.SalesPerson> Add(Data.Entities.SalesPerson salesPerson);
+        IEnumerable<Data.Entities.SalesPerson> GetAll();
+        Task<Data.Entities.SalesPerson> GetById(int id);
         Task<AuthenticateResponse> Register(SalesPersonModel salesPersonModel);
-        Task<bool> IsIdenticalEntity(Data.Models.SalesPerson salesPerson);
+        Task<bool> IsIdenticalEntity(Data.Entities.SalesPerson salesPerson);
     }
 }

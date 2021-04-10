@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using WorldYachts.Data.Models;
+using WorldYachts.Data.Entities;
 
 namespace WorldYachtsApi.Helpers
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class AuthorizeAttribute : Attribute, IAuthorizationFilter
     {
-        private string[] _roles { get; }
+        private readonly string[] _roles;
         public AuthorizeAttribute(params string [] roles)
         {
             _roles = roles;

@@ -13,12 +13,12 @@ namespace WorldYachts.Services.Admin
         {
             _dbContext = dbContext;
         }
-        public IEnumerable<Data.Models.Admin> GetAll()
+        public IEnumerable<Data.Entities.Admin> GetAll()
         {
             return _dbContext.Admins;
         }
 
-        public async Task<Data.Models.Admin> GetById(int id)
+        public async Task<Data.Entities.Admin> GetById(int id)
         {
             return await _dbContext.Admins.FindAsync(id);
         }

@@ -85,17 +85,13 @@ namespace WorldYachtsApi.Controllers
                 return NotFound("No record found against this id");
             }
 
-            switch (user.Role)
+            return user.Role switch
             {
-                case "Customer":
-                    return Ok(await _customerService.GetById(user.UserId));
-                case "Sales Person":
-                    return Ok(await _salesPersonService.GetById(user.UserId));
-                case "Admin":
-                    return Ok(await _adminService.GetById(user.UserId));
-                default:
-                    return NotFound("No record found against this id");
-            }
+                "Customer" => Ok(await _customerService.GetById(user.UserId)),
+                "Sales Person" => Ok(await _salesPersonService.GetById(user.UserId)),
+                "Admin" => Ok(await _adminService.GetById(user.UserId)),
+                _ => NotFound("No record found against this id")
+            };
         }
         
 

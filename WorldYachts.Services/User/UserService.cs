@@ -12,7 +12,6 @@ using WorldYachts.Services.Helpers;
 using WorldYachts.Services.Models;
 using WorldYachts.Services.Models.Authenticate;
 using WorldYachts.Services.SalesPerson;
-using WorldYachtsApi.Models.Authenticate;
 
 namespace WorldYachts.Services.User
 {
@@ -58,7 +57,7 @@ namespace WorldYachts.Services.User
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public async Task<Data.Models.User> Add(Data.Models.User user)
+        public async Task<Data.Entities.User> Add(Data.Entities.User user)
         {
             var addedUser = await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
@@ -70,7 +69,7 @@ namespace WorldYachts.Services.User
         /// Получение всех пользователей
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Data.Models.User> GetAll()
+        public IEnumerable<Data.Entities.User> GetAll()
         {
             return _dbContext.Users;
         }
@@ -80,12 +79,12 @@ namespace WorldYachts.Services.User
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Data.Models.User GetById(int id)
+        public Data.Entities.User GetById(int id)
         {
             return _dbContext.Users.FirstOrDefault(u => u.Id == id);
         }
 
-        public async Task<bool> IsIdenticalEntity(Data.Models.User user)
+        public async Task<bool> IsIdenticalEntity(Data.Entities.User user)
         {
             if (await _dbContext.Users.AnyAsync(
                 c => c.Email.ToLower() == user.Email.ToLower()

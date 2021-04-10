@@ -1,16 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace WorldYachts.Data.Models
+namespace WorldYachts.Data.Entities
 {
-    public class Partner
+    public class Partner : BaseEntity
     {
-        /// <summary>
-        /// Идентификатор партнера
-        /// </summary>
-        [Required]
-        public int Id { get; set; }
-        
         /// <summary>
         /// Название партнера
         /// </summary>

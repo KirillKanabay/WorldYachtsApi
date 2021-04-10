@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using WorldYachts.Data.Models;
+using WorldYachts.Data.Entities;
 using WorldYachts.Services.Models;
 
 

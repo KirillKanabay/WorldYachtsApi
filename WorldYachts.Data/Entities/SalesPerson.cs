@@ -1,14 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WorldYachts.Data.Models
+namespace WorldYachts.Data.Entities
 {
-    public class SalesPerson
+    public class SalesPerson : BaseEntity
     {
-        /// <summary>
-        /// Идентификатор менеджера 
-        /// </summary>
-        [Required] public int Id { get; set; }
-
         /// <summary>
         /// Имя менеджера
         /// </summary>
@@ -19,6 +14,9 @@ namespace WorldYachts.Data.Models
         /// </summary>
         [Required] public string SecondName { get; set; }
 
+        /// <summary>
+        /// E-mail менеджера
+        /// </summary>
         [Required] public string Email { get; set; }
     }
 }

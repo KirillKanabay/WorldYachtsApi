@@ -9,7 +9,6 @@ using WorldYachts.Data;
 using WorldYachts.Services.Models;
 using WorldYachts.Services.Models.Authenticate;
 using WorldYachts.Services.User;
-using WorldYachtsApi.Models.Authenticate;
 
 namespace WorldYachts.Services.SalesPerson
 {
@@ -25,7 +24,7 @@ namespace WorldYachts.Services.SalesPerson
             _userService = userService;
             _mapper = mapper;
         }
-        public async Task<Data.Models.SalesPerson> Add(Data.Models.SalesPerson salesPerson)
+        public async Task<Data.Entities.SalesPerson> Add(Data.Entities.SalesPerson salesPerson)
         {
             var addedSalesPerson = await _dbContext.SalesPersons.AddAsync(salesPerson);
             await _dbContext.SaveChangesAsync();
@@ -33,20 +32,20 @@ namespace WorldYachts.Services.SalesPerson
             return addedSalesPerson.Entity;
         }
 
-        public IEnumerable<Data.Models.SalesPerson> GetAll()
+        public IEnumerable<Data.Entities.SalesPerson> GetAll()
         {
             return _dbContext.SalesPersons;
         }
 
-        public async Task<Data.Models.SalesPerson> GetById(int id)
+        public async Task<Data.Entities.SalesPerson> GetById(int id)
         {
             return await _dbContext.SalesPersons.FindAsync(id);
         }
 
         public async Task<AuthenticateResponse> Register(SalesPersonModel salesPersonModel)
         {
-            var salesPerson = _mapper.Map<Data.Models.SalesPerson>(salesPersonModel);
-            var user = _mapper.Map<Data.Models.User>(salesPersonModel);
+            var salesPerson = _mapper.Map< Data.Entities.SalesPerson >(salesPersonModel);
+            var user = _mapper.Map< Data.Entities.User >(salesPersonModel);
             if (await IsIdenticalEntity(salesPerson)
                 || await _userService.IsIdenticalEntity(user))
             {
@@ -59,14 +58,14 @@ namespace WorldYachts.Services.SalesPerson
 
             var response = _userService.Authenticate(new AuthenticateRequest
             {
-                Username = user.Username,
-                Password = user.Password
+                Username = addedUser.Username,
+                Password = addedUser.Password
             });
 
             return response;
         }
 
-        public async Task<bool> IsIdenticalEntity(Data.Models.SalesPerson salesPerson)
+        public async Task<bool> IsIdenticalEntity(Data.Entities.SalesPerson salesPerson)
         {
             if (await _dbContext.SalesPersons.AnyAsync(sp => sp.Email.ToLower() == salesPerson.Email.ToLower()))
             {
