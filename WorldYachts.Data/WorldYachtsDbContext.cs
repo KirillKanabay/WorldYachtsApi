@@ -64,7 +64,7 @@ namespace WorldYachts.Data
             modelBuilder.Entity<Admin>().HasData(new Admin
             {
                 Id = 1,
-                Name = "Kirill",
+                FirstName = "Kirill",
                 SecondName = "Kanabay"
             });
             modelBuilder.Entity<User>().HasData(new User
