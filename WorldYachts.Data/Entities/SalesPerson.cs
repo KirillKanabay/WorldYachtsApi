@@ -7,7 +7,7 @@ namespace WorldYachts.Data.Entities
         /// <summary>
         /// Имя менеджера
         /// </summary>
-        [Required] public string Name { get; set; }
+        [Required] public string FirstName { get; set; }
 
         /// <summary>
         /// Фамилия менеджера

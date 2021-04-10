@@ -7,6 +7,7 @@ using AutoMapper;
 using WorldYachts.Data.Entities;
 using WorldYachts.Services.BoatType;
 using WorldYachts.Services.Models;
+using WorldYachtsApi.Helpers;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -47,6 +48,7 @@ namespace WorldYachtsApi.Controllers
 
         // POST api/boats/types
         [HttpPost]
+        [Authorize("Admin", "Sales Person")]
         public async Task<IActionResult> Post([FromBody] BoatTypeModel boatTypeModel)
         {
             var boatType = _mapper.Map<BoatType>(boatTypeModel);
@@ -63,6 +65,7 @@ namespace WorldYachtsApi.Controllers
 
         // PUT api/boats/types/{id}
         [HttpPut("{id}")]
+        [Authorize("Admin", "Sales Person")]
         public async Task<IActionResult> Put(int id, [FromBody] BoatTypeModel boatTypeModel)
         {
             var boatType = _mapper.Map<BoatType>(boatTypeModel);
@@ -79,6 +82,7 @@ namespace WorldYachtsApi.Controllers
 
         // DELETE api/boats/types/{id}
         [HttpDelete("{id}")]
+        [Authorize("Admin", "Sales Person")]
         public async Task<IActionResult> Delete(int id)
         {
             var response = await _boatTypeService.Delete(id);

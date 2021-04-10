@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using SolarCoffee.Services;
 using WorldYachts.Data;
 using WorldYachts.Services.Models;
 
@@ -14,39 +13,35 @@ namespace WorldYachts.Services.BoatType
     public class BoatTypeService:IBoatTypeService
     {
         private readonly IEfRepository<Data.Entities.BoatType> _repository;
-        private readonly IMapper _mapper;
-
-        public BoatTypeService(IEfRepository<Data.Entities.BoatType> repository, IMapper mapper)
+        
+        public BoatTypeService(IEfRepository<Data.Entities.BoatType> repository)
         {
             _repository = repository;
-            _mapper = mapper;
         }
 
         public async Task<ServiceResponse<Data.Entities.BoatType>> Add(Data.Entities.BoatType boatType)
         {
             var now = DateTime.UtcNow;
-            try
-            { 
-                var addedBoatType = await _repository.Add(boatType);
-                return new ServiceResponse<Data.Entities.BoatType>()
-                {
-                    IsSuccess = true,
-                    Data = addedBoatType,
-                    Message = "New boat type added",
-                    Time = now
-                };
-            }
-            catch (Exception e)
+            if (await IsIdenticalEntity(boatType))
             {
                 return new ServiceResponse<Data.Entities.BoatType>()
                 {
                     IsSuccess = false,
                     Data = boatType,
-                    Message = $"{e.Message} {Environment.NewLine}" +
-                              $"{e.InnerException?.Message}",
+                    Message = $"Boat type ({boatType.Type}) already exists.",
                     Time = now
                 };
             }
+
+            var addedBoatType = await _repository.Add(boatType);
+            
+            return new ServiceResponse<Data.Entities.BoatType>()
+            {
+                IsSuccess = true,
+                Data = addedBoatType,
+                Message = $"New boat (Id:{addedBoatType.Type}) type added",
+                Time = now
+            };
         }
 
         public IEnumerable<Data.Entities.BoatType> GetAll()
@@ -71,28 +66,26 @@ namespace WorldYachts.Services.BoatType
         public async Task<ServiceResponse<Data.Entities.BoatType>> Update(int id, Data.Entities.BoatType boatType)
         {
             var now = DateTime.UtcNow;
-            try
-            {
-                var updatedBoatType = await _repository.Update(id, boatType);
-                return new ServiceResponse<Data.Entities.BoatType>()
-                {
-                    IsSuccess = true,
-                    Data = updatedBoatType,
-                    Message = "Boat type updated",
-                    Time = now
-                };
-            }
-            catch (Exception e)
+            if (await IsIdenticalEntity(boatType))
             {
                 return new ServiceResponse<Data.Entities.BoatType>()
                 {
                     IsSuccess = false,
                     Data = boatType,
-                    Message  = $"{e.Message} {Environment.NewLine}" +
-                                        $"{e.InnerException?.Message}",
+                    Message = $"Boat type ({boatType.Type}) already exists.",
                     Time = now
                 };
             }
+
+            var updatedBoatType = await _repository.Update(id, boatType);
+
+            return new ServiceResponse<Data.Entities.BoatType>()
+            {
+                IsSuccess = true,
+                Data = updatedBoatType,
+                Message = $"New boat (Id:{updatedBoatType.Type}) type added",
+                Time = now
+            };
         }
 
         public async Task<ServiceResponse<Data.Entities.BoatType>> Delete(int id)
@@ -105,8 +98,18 @@ namespace WorldYachts.Services.BoatType
                 IsSuccess = deletedBoatType != null,
                 Data = deletedBoatType,
                 Message = deletedBoatType != null ? $"Boat type (id:{id}, Type:{deletedBoatType.Type}) deleted" : "Boat type not found",
-                Time = DateTime.UtcNow,
+                Time = now,
             };
+        }
+
+        public async Task<bool> IsIdenticalEntity(Data.Entities.BoatType boatType)
+        {
+            if (await _repository.Find(bt => bt.Type == boatType.Type && bt.Id != boatType.Id) != null)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using WorldYachts.Data;
+using WorldYachts.Services.Authenticate;
 using WorldYachts.Services.Customer;
 using WorldYachts.Services.Helpers;
 using WorldYachts.Services.Models;
@@ -19,15 +19,13 @@ namespace WorldYachts.Services.User
     {
         #region Поля
         private readonly IConfiguration _configuration;
-        private readonly WorldYachtsDbContext _dbContext;
+        private readonly IEfRepository<Data.Entities.User> _repository;
         #endregion
 
-        public UserService(WorldYachtsDbContext dbContext,
-            IConfiguration configuration, 
-            IMapper mapper)
+        public UserService(IConfiguration configuration, IEfRepository<Data.Entities.User> repository)
         {
             _configuration = configuration;
-            _dbContext = dbContext;
+            _repository = repository;
         }
 
         /// <summary>
@@ -35,21 +33,17 @@ namespace WorldYachts.Services.User
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public AuthenticateResponse Authenticate(AuthenticateRequest model)
+        public async Task<ServiceResponse<AuthenticateResponse>> Authenticate(AuthenticateRequest model)
         {
-            var user = _dbContext
-                .Users
-                .FirstOrDefault(x => x.Username == model.Username && x.Password == model.Password);
-
-            if (user == null)
+            var user = await _repository.Find(x => x.Username == model.Username && x.Password == model.Password);
+            
+            return new ServiceResponse<AuthenticateResponse>
             {
-                // todo: need to add logger
-                return null;
-            }
-
-            var token = _configuration.GenerateJwtToken(user);
-
-            return new AuthenticateResponse(user, token);
+                IsSuccess = user != null,
+                Data = user != null ? new AuthenticateResponse(user, token: _configuration.GenerateJwtToken(user)) : null,
+                Message = user != null ? $"Authenticate successful" : "Wrong username or password",
+                Time = DateTime.UtcNow,
+            };
         }
 
         /// <summary>
@@ -57,12 +51,29 @@ namespace WorldYachts.Services.User
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public async Task<Data.Entities.User> Add(Data.Entities.User user)
+        public async Task<ServiceResponse<Data.Entities.User>> Add(Data.Entities.User user)
         {
-            var addedUser = await _dbContext.Users.AddAsync(user);
-            await _dbContext.SaveChangesAsync();
+            var now = DateTime.UtcNow;
+            if (await IsIdenticalEntity(user))
+            {
+                return new ServiceResponse<Data.Entities.User>()
+                {
+                    IsSuccess = false,
+                    Data = user,
+                    Message = "User already exist.",
+                    Time = now
+                };
+            }
 
-            return addedUser.Entity;
+            var addedUser = await _repository.Add(user);
+
+            return new ServiceResponse<Data.Entities.User>()
+            {
+                IsSuccess = true,
+                Data = addedUser,
+                Message = $"Customer (id:{addedUser.Id} Username:{addedUser.Username} added",
+                Time = now
+            };
         }
 
         /// <summary>
@@ -71,7 +82,7 @@ namespace WorldYachts.Services.User
         /// <returns></returns>
         public IEnumerable<Data.Entities.User> GetAll()
         {
-            return _dbContext.Users;
+            return _repository.GetAll();
         }
 
         /// <summary>
@@ -79,16 +90,64 @@ namespace WorldYachts.Services.User
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Data.Entities.User GetById(int id)
+        public async Task<ServiceResponse<Data.Entities.User>> GetById(int id)
         {
-            return _dbContext.Users.FirstOrDefault(u => u.Id == id);
+            var user = await _repository.GetById(id);
+
+            return new ServiceResponse<Data.Entities.User>()
+            {
+                IsSuccess = user != null,
+                Data = user,
+                Message = user != null ? $"Got user by id: {id}" : "User not found",
+                Time = DateTime.UtcNow,
+            };
+        }
+
+        public async Task<ServiceResponse<Data.Entities.User>> Update(int id, Data.Entities.User user)
+        {
+            var now = DateTime.UtcNow;
+            if (await IsIdenticalEntity(user))
+            {
+                return new ServiceResponse<Data.Entities.User>()
+                {
+                    IsSuccess = false,
+                    Data = user,
+                    Message = $"User already exist.",
+                    Time = now
+                };
+            }
+
+            var updatedUser = await _repository.Update(id, user);
+
+            return new ServiceResponse<Data.Entities.User>()
+            {
+                IsSuccess = true,
+                Data = updatedUser,
+                Message = $"User (id:{updatedUser.Id} Username:{updatedUser.Username}) updated.",
+                Time = now
+            };
+        }
+
+        public async Task<ServiceResponse<Data.Entities.User>> Delete(int id)
+        {
+            var now = DateTime.UtcNow;
+            var deletedUser = await _repository.Delete(id);
+
+            return new ServiceResponse<Data.Entities.User>()
+            {
+                IsSuccess = deletedUser != null,
+                Data = deletedUser,
+                Message = deletedUser != null ? $"User (id:{id}) deleted" : "User not found",
+                Time = now,
+            };
         }
 
         public async Task<bool> IsIdenticalEntity(Data.Entities.User user)
         {
-            if (await _dbContext.Users.AnyAsync(
-                c => c.Email.ToLower() == user.Email.ToLower()
-                     || c.Username.ToLower() == user.Username.ToLower()))
+            if (await _repository.Find(
+                u => (u.Email.ToLower() == user.Email.ToLower()
+                     || u.Username.ToLower() == user.Username.ToLower()) 
+                     && u.Id != user.Id) != null)
             {
                 return true;
             }

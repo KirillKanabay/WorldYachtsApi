@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace SolarCoffee.Services
+namespace WorldYachts.Services
 {
     public class ServiceResponse<T>
     {

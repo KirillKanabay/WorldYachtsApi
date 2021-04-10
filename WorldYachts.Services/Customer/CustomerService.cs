@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using WorldYachts.Data;
-using WorldYachts.Services.Models;
+using WorldYachts.Services.Authenticate;
 using WorldYachts.Services.Models.Authenticate;
 using WorldYachts.Services.User;
 
@@ -11,64 +12,100 @@ namespace WorldYachts.Services.Customer
 {
     public class CustomerService : ICustomerService
     {
-        private readonly WorldYachtsDbContext _dbContext;
-        private readonly IUserService _userService;
-        private readonly IMapper _mapper;
-
-        public CustomerService(WorldYachtsDbContext dbContext, IUserService userService, IMapper mapper)
+        private readonly IEfRepository<Data.Entities.Customer> _repository; 
+        public CustomerService(IEfRepository<Data.Entities.Customer> repository)
         {
-            _dbContext = dbContext;
-            _userService = userService;
-            _mapper = mapper;
+            _repository = repository;
         }
-
-        public async Task<Data.Entities.Customer> Add(Data.Entities.Customer customer)
+        
+        public async Task<ServiceResponse<Data.Entities.Customer>> Add(Data.Entities.Customer customer)
         {
-            var addedCustomer = await _dbContext.Customers.AddAsync(customer);
-            await _dbContext.SaveChangesAsync();
+            var now = DateTime.UtcNow;
+            if (await IsIdenticalEntity(customer))
+            {
+                return new ServiceResponse<Data.Entities.Customer>()
+                {
+                    IsSuccess = false,
+                    Data = customer,
+                    Message = "Customer already exist.",
+                    Time = now
+                };
+            }
 
-            return addedCustomer.Entity;
+            var addedCustomer = await _repository.Add(customer);
+
+            return new ServiceResponse<Data.Entities.Customer>()
+            {
+                IsSuccess = true,
+                Data = addedCustomer,
+                Message = $"Customer (id:{addedCustomer.Id} First name:{addedCustomer.FirstName} Second Name:{addedCustomer.SecondName}) added",
+                Time = now
+            };
         }
 
         public IEnumerable<Data.Entities.Customer> GetAll()
         {
-            return _dbContext.Customers;
+            return _repository.GetAll();
         }
 
-        public async Task<Data.Entities.Customer> GetById(int id)
+        public async Task<ServiceResponse<Data.Entities.Customer>> GetById(int id)
         {
-            return await _dbContext.Customers.FindAsync(id);
-        }
+            var customer = await _repository.GetById(id);
 
-        public async Task<AuthenticateResponse> Register(CustomerModel customerModel)
-        {
-            var customer = _mapper.Map<Data.Entities.Customer>(customerModel);
-            var user = _mapper.Map<Data.Entities.User>(customerModel);
-
-            if (await IsIdenticalEntity(customer) ||
-                  await _userService.IsIdenticalEntity(user))
+            return new ServiceResponse<Data.Entities.Customer>()
             {
-                return null;
+                IsSuccess = customer != null,
+                Data = customer,
+                Message = customer != null ? $"Got customer by id: {id}" : "Customer not found",
+                Time = DateTime.UtcNow,
+            };
+        }
+
+        public async Task<ServiceResponse<Data.Entities.Customer>> Update(int id, Data.Entities.Customer customer)
+        {
+            var now = DateTime.UtcNow;
+            if (await IsIdenticalEntity(customer))
+            {
+                return new ServiceResponse<Data.Entities.Customer>()
+                {
+                    IsSuccess = false,
+                    Data = customer,
+                    Message = $"Customer already exist.",
+                    Time = now
+                };
             }
-            var addedCustomer = await Add(customer);
-            
-            user.UserId = addedCustomer.Id;
-            var addedUser = await _userService.Add(user);
 
-            var response = _userService.Authenticate(new AuthenticateRequest
+            var updatedCustomer = await _repository.Update(id, customer);
+
+            return new ServiceResponse<Data.Entities.Customer>()
             {
-                Username = addedUser.Username,
-                Password = addedUser.Password
-            });
+                IsSuccess = true,
+                Data = updatedCustomer,
+                Message = $"Customer (id:{updatedCustomer.Id} First name:{updatedCustomer.FirstName} Second Name:{updatedCustomer.SecondName}) updated",
+                Time = now
+            };
+        }
 
-            return response;
+        public async Task<ServiceResponse<Data.Entities.Customer>> Delete(int id)
+        {
+            var now = DateTime.UtcNow;
+            var deletedCustomer = await _repository.Delete(id);
+
+            return new ServiceResponse<Data.Entities.Customer>()
+            {
+                IsSuccess = deletedCustomer != null,
+                Data = deletedCustomer,
+                Message = deletedCustomer != null ? $"Customer (id:{id}) deleted" : "Customer not found",
+                Time = now,
+            };
         }
 
         public async Task<bool> IsIdenticalEntity(Data.Entities.Customer customer)
         {
-            if (await _dbContext.Customers.AnyAsync(
-                c => c.Email.ToLower() == customer.Email.ToLower()
-                || c.IdNumber.ToLower() == customer.IdNumber.ToLower()))
+            //Проверка по номеру документов и номеру телефона
+            if (await _repository.Find(c=>(c.IdNumber == customer.IdNumber 
+                                     || c.Phone == customer.Phone )
+                                    && c.Id != customer.Id) != null)
             {
                 return true;
             }

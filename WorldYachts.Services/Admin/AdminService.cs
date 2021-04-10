@@ -8,19 +8,26 @@ namespace WorldYachts.Services.Admin
 {
     public class AdminService:IAdminService
     {
-        private readonly WorldYachtsDbContext _dbContext;
-        public AdminService(WorldYachtsDbContext dbContext)
+        private readonly IEfRepository<Data.Entities.Admin> _repository;
+        public AdminService(IEfRepository<Data.Entities.Admin> repository)
         {
-            _dbContext = dbContext;
+            _repository = repository;
         }
         public IEnumerable<Data.Entities.Admin> GetAll()
         {
-            return _dbContext.Admins;
+            return _repository.GetAll();
         }
-
-        public async Task<Data.Entities.Admin> GetById(int id)
+        public async Task<ServiceResponse<Data.Entities.Admin>> GetById(int id)
         {
-            return await _dbContext.Admins.FindAsync(id);
+            var admin = await _repository.GetById(id);
+
+            return new ServiceResponse<Data.Entities.Admin>()
+            {
+                IsSuccess = admin != null,
+                Data = admin,
+                Message = admin != null ? $"Got admin by id: {id}" : "Admin not found",
+                Time = DateTime.UtcNow,
+            };
         }
     }
 }

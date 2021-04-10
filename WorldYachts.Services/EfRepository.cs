@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using WorldYachts.Data;
@@ -77,6 +79,18 @@ namespace WorldYachts.Services
             await _dbContext.SaveChangesAsync();
             
             return deletedEntity.Entity;
+        }
+
+        public IEnumerable<TEntity> Filter(Func<TEntity, bool> filterFunc)
+        {
+            var result = _dbContext.Set<TEntity>().Where(filterFunc);
+            return result;
+        }
+
+        public async Task<TEntity> Find(Func<TEntity, bool> findFunc)
+        {
+            var result = await _dbContext.Set<TEntity>().FindAsync(findFunc);
+            return result;
         }
     }
 }

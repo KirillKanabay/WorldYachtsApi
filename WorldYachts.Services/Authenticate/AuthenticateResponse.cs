@@ -1,4 +1,4 @@
-﻿namespace WorldYachts.Services.Models.Authenticate
+﻿namespace WorldYachts.Services.Authenticate
 {
     public class AuthenticateResponse
     {

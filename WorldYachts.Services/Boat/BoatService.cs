@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -11,83 +12,98 @@ namespace WorldYachts.Services.Boat
 {
     public class BoatService : IBoatService
     {
-        private readonly WorldYachtsDbContext _dbContext;
-        private readonly IMapper _mapper;
+        private readonly IEfRepository<Data.Entities.Boat> _repository;
 
-        public BoatService(WorldYachtsDbContext dbContext, IMapper mapper)
+        public BoatService(IEfRepository<Data.Entities.Boat> repository)
         {
-            _dbContext = dbContext;
-            _mapper = mapper;
+            _repository = repository;
         }
 
-        public async Task<Data.Entities.Boat> Add(BoatModel boatModel)
+        public async Task<ServiceResponse<Data.Entities.Boat>> Add(Data.Entities.Boat boat)
         {
-            var boat = _mapper.Map<Data.Entities.Boat>(boatModel);
-            
+            var now = DateTime.UtcNow;
             if (await IsIdenticalEntity(boat))
             {
-                return null;
+                return new ServiceResponse<Data.Entities.Boat>()
+                {
+                    IsSuccess = false,
+                    Data = boat,
+                    Message = $"Boat (Model:{boat.Model}) already exist.",
+                    Time = now
+                };
             }
 
-            var addedBoat = await _dbContext.Boats.AddAsync(boat);
+            var addedBoat = await _repository.Add(boat);
 
-            await _dbContext.SaveChangesAsync();
-
-            return addedBoat.Entity;
+            return new ServiceResponse<Data.Entities.Boat>()
+            {
+                IsSuccess = true,
+                Data = addedBoat,
+                Message = $"Boat (id:{addedBoat.Id} Model:{addedBoat.Model}) added",
+                Time = now
+            };
         }
 
         public IEnumerable<Data.Entities.Boat> GetAll()
         {
-            return _dbContext.Boats
-                .Include(boat => boat.BoatWood)
-                .Include(boat => boat.BoatType)
-                .Include(boat => boat.AccessoryToBoat);
+            return _repository.GetAll();
         }
 
-        public async Task<Data.Entities.Boat> GetById(int id)
+        public async Task<ServiceResponse<Data.Entities.Boat>> GetById(int id)
         {
-            var boat = await _dbContext.Boats.FindAsync(id);
-            return boat;
-        }
+            var boat = await _repository.GetById(id);
 
-        public async Task<Data.Entities.Boat> Update(int id, BoatModel boatModel)
-        {
-            var boat = await _dbContext.Boats.FindAsync(id);
-
-            if (boat == null)
+            return new ServiceResponse<Data.Entities.Boat>()
             {
-                return null;
-            }
+                IsSuccess = boat != null,
+                Data = boat,
+                Message = boat != null ? $"Got boat by id: {id}" : "Boat type not found",
+                Time = DateTime.UtcNow,
+            };
+        }
 
-            _mapper.Map(boatModel, boat);
-            
+        public async Task<ServiceResponse<Data.Entities.Boat>> Update(int id, Data.Entities.Boat boat)
+        {
+            var now = DateTime.UtcNow;
             if (await IsIdenticalEntity(boat))
             {
-                return null;
+                return new ServiceResponse<Data.Entities.Boat>()
+                {
+                    IsSuccess = false,
+                    Data = boat,
+                    Message = $"Boat (Model:{boat.Model}) already exist.",
+                    Time = now
+                };
             }
 
-            await _dbContext.SaveChangesAsync();
-
-            return boat;
+            var updatedBoat = await _repository.Update(id, boat);
+            
+            return new ServiceResponse<Data.Entities.Boat>()
+            {
+                IsSuccess = true,
+                Data = updatedBoat,
+                Message = $"Boat (id:{updatedBoat.Id} Model:{updatedBoat.Model}) updated",
+                Time = now
+            };
         }
 
-        public async Task<Data.Entities.Boat> Delete(int id)
+        public async Task<ServiceResponse<Data.Entities.Boat>> Delete(int id)
         {
-            var boat = await GetById(id);
-            if (boat == null)
+            var now = DateTime.UtcNow;
+            var deletedBoat = await _repository.Delete(id);
+
+            return new ServiceResponse<Data.Entities.Boat>()
             {
-                return null;
-            }
-
-            var deletedBoat = _dbContext.Boats.Remove(boat);
-            await _dbContext.SaveChangesAsync();
-
-            return deletedBoat.Entity;
+                IsSuccess = deletedBoat != null,
+                Data = deletedBoat,
+                Message = deletedBoat != null ? $"Boat (id:{id}, Model:{deletedBoat.Model}) deleted" : "Boat not found",
+                Time = now,
+            };
         }
 
         public async Task<bool> IsIdenticalEntity(Data.Entities.Boat boat)
         {
-            if (await _dbContext.Boats.AnyAsync(b => b.Model.ToLower() == boat.Model.ToLower()))
+            if (await _repository.Find(b => b.Model == boat.Model && b.Id != boat.Id) != null)
             {
                 return true;
             }

@@ -8,6 +8,6 @@ namespace WorldYachts.Services.Admin
     public interface IAdminService
     {
         IEnumerable<Data.Entities.Admin> GetAll();
-        Task<Data.Entities.Admin> GetById(int id);
+        Task<ServiceResponse<Data.Entities.Admin>> GetById(int id);
     }
 }

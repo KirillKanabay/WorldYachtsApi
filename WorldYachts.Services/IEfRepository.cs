@@ -13,5 +13,7 @@ namespace WorldYachts.Services
         Task<TEntity> GetById(int id);
         Task<TEntity> Update(int id, TEntity entity);
         Task<TEntity> Delete(int id);
+        IEnumerable<TEntity> Filter(Func<TEntity, bool> filterAction);
+        Task<TEntity> Find(Func<TEntity, bool> findFunc);
     }
 }

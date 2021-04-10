@@ -9,7 +9,7 @@ namespace WorldYachts.Data.Entities
         /// Имя клиента
         /// </summary>
         [Required]
-        public string Name { get; set; }
+        public string FirstName { get; set; }
 
         /// <summary>
         /// Фамилия клиента
@@ -40,12 +40,6 @@ namespace WorldYachts.Data.Entities
         /// </summary>
         [Required]
         public string Phone { get; set; }
-
-        /// <summary>
-        /// Email клиента
-        /// </summary>
-        [Required]
-        public string Email { get; set; }
 
         /// <summary>
         /// Название организации клиента
