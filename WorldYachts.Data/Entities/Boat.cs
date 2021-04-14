@@ -67,6 +67,10 @@ namespace WorldYachts.Data.Entities
 
         #endregion
 
+        public Boat Clone()
+        {
+            return (Boat)MemberwiseClone();
+        }
 
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using WorldYachts.Data;
 using WorldYachts.Data.Entities;
 
 namespace WorldYachts.Services

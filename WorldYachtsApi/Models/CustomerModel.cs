@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace WorldYachts.Services.Models
+namespace WorldYachtsApi.Models
 {
     public class CustomerModel:UserModel
     {
         public string Role => "Customer";
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string FirstName { get; set; }
         public string SecondName { get; set; }
         public DateTime BirthDate { get; set; }
         public string Address { get; set; }

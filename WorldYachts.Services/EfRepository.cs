@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using WorldYachts.Data;
 using WorldYachts.Data.Entities;
 
@@ -58,7 +60,7 @@ namespace WorldYachts.Services
 
             result = _mapper.Map(entity, result);
             result.Id = id;
-
+            _dbContext.Set<TEntity>().Update(result);
             await _dbContext.SaveChangesAsync();
             
             return result;
@@ -87,9 +89,9 @@ namespace WorldYachts.Services
             return result;
         }
 
-        public async Task<TEntity> Find(Func<TEntity, bool> findFunc)
+        public async Task<TEntity> Find(Func<TEntity,bool> findFunc)
         {
-            var result = await _dbContext.Set<TEntity>().FindAsync(findFunc);
+            var result = _dbContext.Set<TEntity>().FirstOrDefault(findFunc);
             return result;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WorldYachts.Data.Entities
 {
@@ -16,12 +17,12 @@ namespace WorldYachts.Data.Entities
         // /// <summary>
         // /// Ссылка на лодку
         // /// </summary>
-        // [ForeignKey("BoatId")]
+        [ForeignKey("BoatId")]
         public virtual Boat Boat { get; set; }
         // /// <summary>
         // /// Ссылка на аксессуар
         // /// </summary>
-        // [ForeignKey("AccessoryId")]
+        [ForeignKey("AccessoryId")]
         public virtual Accessory Accessory { get; set; }
     }
 }

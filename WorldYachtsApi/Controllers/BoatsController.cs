@@ -3,10 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using WorldYachts.Data.Entities;
 using WorldYachts.Services.Boat;
 using WorldYachts.Services.BoatType;
 using WorldYachts.Services.Models;
 using WorldYachtsApi.Helpers;
+using WorldYachtsApi.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,11 +20,11 @@ namespace WorldYachtsApi.Controllers
     public class BoatsController : ControllerBase
     {
         private readonly IBoatService _boatService;
-        private readonly IBoatTypeService _boatTypeService;
-        public BoatsController(IBoatService boatService, IBoatTypeService boatTypeService)
+        private readonly IMapper _mapper;
+        public BoatsController(IBoatService boatService, IMapper mapper)
         {
             _boatService = boatService;
-            _boatTypeService = boatTypeService;
+            _mapper = mapper;
         }
 
         #region Boat
@@ -37,13 +40,13 @@ namespace WorldYachtsApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var boat = await _boatService.GetById(id);
-            if (boat == null)
+            var response = await _boatService.GetByIdAsync(id);
+            if (!response.IsSuccess)
             {
-                return BadRequest("No record found against this id");
+                return BadRequest(response.Message);
             }
 
-            return Ok(boat);
+            return Ok(response.Data);
         }
 
         // POST api/<BoatsController>
@@ -51,14 +54,16 @@ namespace WorldYachtsApi.Controllers
         [Authorize("Admin", "Sales Person")]
         public async Task<IActionResult> Post([FromBody] BoatModel boatModel)
         {
-            var boat = await _boatService.Add(boatModel);
+            var boat = _mapper.Map<Boat>(boatModel);
 
-            if (boat == null)
+            var response = await _boatService.AddAsync(boat);
+
+            if (!response.IsSuccess)
             {
-                return BadRequest("Can't add this record.");
+                return BadRequest(response.Message);
             }
 
-            return Ok(boat);
+            return Ok(response.Data);
         }
 
         // PUT api/<BoatsController>/5
@@ -66,14 +71,16 @@ namespace WorldYachtsApi.Controllers
         [Authorize("Admin", "Sales Person")]
         public async Task<IActionResult> Put(int id, [FromBody] BoatModel boatModel)
         {
-            var boat = await _boatService.Update(id, boatModel);
+            var boat = _mapper.Map<Boat>(boatModel);
 
-            if (boat == null)
+            var response = await _boatService.UpdateAsync(id, boat);
+
+            if (!response.IsSuccess)
             {
-                return BadRequest("Can't update this record");
+                return BadRequest(response.Message);
             }
 
-            return Ok(boat);
+            return Ok(response.Data);
         }
 
         // DELETE api/<BoatsController>/5
@@ -81,13 +88,14 @@ namespace WorldYachtsApi.Controllers
         [Authorize("Admin", "Sales Person")]
         public async Task<IActionResult> Delete(int id)
         {
-            var boat = await _boatService.Delete(id);
-            if (boat == null)
+            var response = await _boatService.DeleteAsync(id);
+            
+            if (!response.IsSuccess)
             {
-                return BadRequest("Can't delete this record.");
+                return BadRequest(response.Message);
             }
 
-            return Ok(boat);
+            return Ok(response.Data);
         }
 
         #endregion

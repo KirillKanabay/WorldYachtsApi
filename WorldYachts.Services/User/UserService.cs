@@ -33,7 +33,7 @@ namespace WorldYachts.Services.User
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async Task<ServiceResponse<AuthenticateResponse>> Authenticate(AuthenticateRequest model)
+        public async Task<ServiceResponse<AuthenticateResponse>> AuthenticateAsync(AuthenticateRequest model)
         {
             var user = await _repository.Find(x => x.Username == model.Username && x.Password == model.Password);
             
@@ -51,10 +51,10 @@ namespace WorldYachts.Services.User
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public async Task<ServiceResponse<Data.Entities.User>> Add(Data.Entities.User user)
+        public async Task<ServiceResponse<Data.Entities.User>> AddAsync(Data.Entities.User user)
         {
             var now = DateTime.UtcNow;
-            if (await IsIdenticalEntity(user))
+            if (await IsIdenticalEntityAsync(user))
             {
                 return new ServiceResponse<Data.Entities.User>()
                 {
@@ -90,7 +90,7 @@ namespace WorldYachts.Services.User
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<ServiceResponse<Data.Entities.User>> GetById(int id)
+        public async Task<ServiceResponse<Data.Entities.User>> GetByIdAsync(int id)
         {
             var user = await _repository.GetById(id);
 
@@ -103,10 +103,10 @@ namespace WorldYachts.Services.User
             };
         }
 
-        public async Task<ServiceResponse<Data.Entities.User>> Update(int id, Data.Entities.User user)
+        public async Task<ServiceResponse<Data.Entities.User>> UpdateAsync(int id, Data.Entities.User user)
         {
             var now = DateTime.UtcNow;
-            if (await IsIdenticalEntity(user))
+            if (await IsIdenticalEntityAsync(user))
             {
                 return new ServiceResponse<Data.Entities.User>()
                 {
@@ -128,7 +128,7 @@ namespace WorldYachts.Services.User
             };
         }
 
-        public async Task<ServiceResponse<Data.Entities.User>> Delete(int id)
+        public async Task<ServiceResponse<Data.Entities.User>> DeleteAsync(int id)
         {
             var now = DateTime.UtcNow;
             var deletedUser = await _repository.Delete(id);
@@ -142,7 +142,7 @@ namespace WorldYachts.Services.User
             };
         }
 
-        public async Task<bool> IsIdenticalEntity(Data.Entities.User user)
+        public async Task<bool> IsIdenticalEntityAsync(Data.Entities.User user)
         {
             if (await _repository.Find(
                 u => (u.Email.ToLower() == user.Email.ToLower()

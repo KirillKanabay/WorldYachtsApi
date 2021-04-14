@@ -2,7 +2,9 @@
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using WorldYachts.Data.Entities;
 using WorldYachts.Services.Admin;
 using WorldYachts.Services.Customer;
 using WorldYachts.Services.Models;
@@ -10,6 +12,7 @@ using WorldYachts.Services.Models.Authenticate;
 using WorldYachts.Services.SalesPerson;
 using WorldYachts.Services.User;
 using WorldYachtsApi.Helpers;
+using WorldYachtsApi.Models;
 
 
 namespace WorldYachtsApi.Controllers
@@ -22,27 +25,32 @@ namespace WorldYachtsApi.Controllers
         private readonly ISalesPersonService _salesPersonService;
         private readonly ICustomerService _customerService;
         private readonly IAdminService _adminService;
+        private readonly IMapper _mapper;
 
         public UsersController(IUserService userService, 
             ISalesPersonService salesPersonService, 
             ICustomerService customerService,
-            IAdminService adminService)
+            IAdminService adminService,
+            IMapper mapper)
         {
             _userService = userService;
             _salesPersonService = salesPersonService;
             _customerService = customerService;
             _adminService = adminService;
+            _mapper = mapper;
         }
 
         [HttpPost("authenticate")]
-        public IActionResult Authenticate(AuthenticateRequest model)
+        public async Task<IActionResult> Authenticate(AuthenticateRequest model)
         {
-            var response = _userService.Authenticate(model);
+            var response = await _userService.AuthenticateAsync(model);
 
-            if (response == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
+            if (!response.IsSuccess)
+            {
+                return BadRequest(response.Message);
+            }
 
-            return Ok(response);
+            return Ok(response.Data);
         }
 
         #region Register
@@ -50,48 +58,107 @@ namespace WorldYachtsApi.Controllers
         [HttpPost("register/customer")]
         public async Task<IActionResult> Register(CustomerModel customerModel)
         {
-            var response = await _customerService.Register(customerModel);
+            //Получаем сущность клиента и пользователя через модель клиента
+            var customer = _mapper.Map<Customer>(customerModel);
+            var user = _mapper.Map<User>(customerModel);
 
-            if (response == null)
+            //Если данные клиента или пользовательские данные(Почта, логин) уже существуют возвращаем ошибку 
+            if (await _customerService.IsIdenticalEntityAsync(customer)
+                || await _userService.IsIdenticalEntityAsync(user))
             {
-                return BadRequest(new { message = "Didn't register!" });
+                return BadRequest("An user with such data already exists");
             }
 
-            return Ok(response);
+            //Добавляем данные клиента в БД
+            var customerResponse = await _customerService.AddAsync(customer);
+            if (!customerResponse.IsSuccess)
+            {
+                return BadRequest(customerResponse.Message);
+            }
+
+            //Добавляем пользователя в БД
+            user.UserId = customerResponse.Data.Id;
+            var userRegisterResponse = await _userService.AddAsync(user);
+
+            if (!userRegisterResponse.IsSuccess)
+            {
+                return BadRequest(userRegisterResponse.Message);
+            }
+
+            //Сразу аутентифицируем зарегистрированного пользователя
+            return await Authenticate(new AuthenticateRequest()
+            {
+                Username = userRegisterResponse.Data.Username,
+                Password = userRegisterResponse.Data.Password
+            });
         }
 
         [HttpPost("register/salesperson")]
         [Authorize("Admin")]
         public async Task<IActionResult> Register(SalesPersonModel salesPersonModel)
         {
-            var response = await _salesPersonService.Register(salesPersonModel);
+            //Получаем сущность менеджера и пользователя через модель клиента
+            var salesPerson = _mapper.Map<SalesPerson>(salesPersonModel);
+            var user = _mapper.Map<User>(salesPersonModel);
 
-            if (response == null)
+            //Если данные менеджера или пользовательские данные(Почта, логин) уже существуют возвращаем ошибку 
+            if (await _salesPersonService.IsIdenticalEntityAsync(salesPerson)
+                || await _userService.IsIdenticalEntityAsync(user))
             {
-                return BadRequest(new { message = "Didn't register!" });
+                return BadRequest("An user with such data already exists");
             }
 
-            return Ok(response);
+            //Добавляем данные менеджера в БД
+            var salesPersonResponse = await _salesPersonService.AddAsync(salesPerson);
+            if (!salesPersonResponse.IsSuccess)
+            {
+                return BadRequest(salesPersonResponse.Message);
+            }
+
+            //Добавляем пользователя в БД
+            user.UserId = salesPersonResponse.Data.Id;
+            var userRegisterResponse = await _userService.AddAsync(user);
+
+            if (!userRegisterResponse.IsSuccess)
+            {
+                return BadRequest(userRegisterResponse.Message);
+            }
+
+            //Сразу аутентифицируем зарегистрированного пользователя
+            return await Authenticate(new AuthenticateRequest()
+            {
+                Username = userRegisterResponse.Data.Username,
+                Password = userRegisterResponse.Data.Password
+            });
         }
         #endregion
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var user = _userService.GetById(id);
+            var userResponse = await _userService.GetByIdAsync(id);
             
-            if (user == null)
+            if (!userResponse.IsSuccess)
             {
-                return NotFound("No record found against this id");
+                return NotFound(userResponse.Message);
             }
 
-            return user.Role switch
+            var user = userResponse.Data;
+
+            switch (user.Role)
             {
-                "Customer" => Ok(await _customerService.GetById(user.UserId)),
-                "Sales Person" => Ok(await _salesPersonService.GetById(user.UserId)),
-                "Admin" => Ok(await _adminService.GetById(user.UserId)),
-                _ => NotFound("No record found against this id")
-            };
+                case "Customer":
+                    var customer = await _customerService.GetByIdAsync(user.UserId);
+                    return Ok(customer.Data);
+                case "Sales Person":
+                    var sp = await _salesPersonService.GetByIdAsync(user.UserId);
+                    return Ok(sp.Data);
+                case "Admin":
+                    var admin = await _adminService.GetByIdAsync(user.UserId);
+                    return Ok(admin.Data);
+                default:
+                    return NotFound("No record found against this id");
+            }
         }
         
 

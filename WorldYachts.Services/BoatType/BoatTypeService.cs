@@ -19,10 +19,10 @@ namespace WorldYachts.Services.BoatType
             _repository = repository;
         }
 
-        public async Task<ServiceResponse<Data.Entities.BoatType>> Add(Data.Entities.BoatType boatType)
+        public async Task<ServiceResponse<Data.Entities.BoatType>> AddAsync(Data.Entities.BoatType boatType)
         {
             var now = DateTime.UtcNow;
-            if (await IsIdenticalEntity(boatType))
+            if (await IsIdenticalEntityAsync(boatType))
             {
                 return new ServiceResponse<Data.Entities.BoatType>()
                 {
@@ -49,7 +49,7 @@ namespace WorldYachts.Services.BoatType
             return _repository.GetAll();
         }
 
-        public async Task<ServiceResponse<Data.Entities.BoatType>> GetById(int id)
+        public async Task<ServiceResponse<Data.Entities.BoatType>> GetByIdAsync(int id)
         {
             var boatType = await _repository.GetById(id);
 
@@ -63,10 +63,10 @@ namespace WorldYachts.Services.BoatType
 
         }
 
-        public async Task<ServiceResponse<Data.Entities.BoatType>> Update(int id, Data.Entities.BoatType boatType)
+        public async Task<ServiceResponse<Data.Entities.BoatType>> UpdateAsync(int id, Data.Entities.BoatType boatType)
         {
             var now = DateTime.UtcNow;
-            if (await IsIdenticalEntity(boatType))
+            if (await IsIdenticalEntityAsync(boatType))
             {
                 return new ServiceResponse<Data.Entities.BoatType>()
                 {
@@ -88,7 +88,7 @@ namespace WorldYachts.Services.BoatType
             };
         }
 
-        public async Task<ServiceResponse<Data.Entities.BoatType>> Delete(int id)
+        public async Task<ServiceResponse<Data.Entities.BoatType>> DeleteAsync(int id)
         {
             var now = DateTime.UtcNow;
             var deletedBoatType = await _repository.Delete(id);
@@ -102,7 +102,7 @@ namespace WorldYachts.Services.BoatType
             };
         }
 
-        public async Task<bool> IsIdenticalEntity(Data.Entities.BoatType boatType)
+        public async Task<bool> IsIdenticalEntityAsync(Data.Entities.BoatType boatType)
         {
             if (await _repository.Find(bt => bt.Type == boatType.Type && bt.Id != boatType.Id) != null)
             {

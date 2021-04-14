@@ -18,10 +18,10 @@ namespace WorldYachts.Services.Customer
             _repository = repository;
         }
         
-        public async Task<ServiceResponse<Data.Entities.Customer>> Add(Data.Entities.Customer customer)
+        public async Task<ServiceResponse<Data.Entities.Customer>> AddAsync(Data.Entities.Customer customer)
         {
             var now = DateTime.UtcNow;
-            if (await IsIdenticalEntity(customer))
+            if (await IsIdenticalEntityAsync(customer))
             {
                 return new ServiceResponse<Data.Entities.Customer>()
                 {
@@ -48,7 +48,7 @@ namespace WorldYachts.Services.Customer
             return _repository.GetAll();
         }
 
-        public async Task<ServiceResponse<Data.Entities.Customer>> GetById(int id)
+        public async Task<ServiceResponse<Data.Entities.Customer>> GetByIdAsync(int id)
         {
             var customer = await _repository.GetById(id);
 
@@ -61,10 +61,10 @@ namespace WorldYachts.Services.Customer
             };
         }
 
-        public async Task<ServiceResponse<Data.Entities.Customer>> Update(int id, Data.Entities.Customer customer)
+        public async Task<ServiceResponse<Data.Entities.Customer>> UpdateAsync(int id, Data.Entities.Customer customer)
         {
             var now = DateTime.UtcNow;
-            if (await IsIdenticalEntity(customer))
+            if (await IsIdenticalEntityAsync(customer))
             {
                 return new ServiceResponse<Data.Entities.Customer>()
                 {
@@ -86,7 +86,7 @@ namespace WorldYachts.Services.Customer
             };
         }
 
-        public async Task<ServiceResponse<Data.Entities.Customer>> Delete(int id)
+        public async Task<ServiceResponse<Data.Entities.Customer>> DeleteAsync(int id)
         {
             var now = DateTime.UtcNow;
             var deletedCustomer = await _repository.Delete(id);
@@ -100,7 +100,7 @@ namespace WorldYachts.Services.Customer
             };
         }
 
-        public async Task<bool> IsIdenticalEntity(Data.Entities.Customer customer)
+        public async Task<bool> IsIdenticalEntityAsync(Data.Entities.Customer customer)
         {
             //Проверка по номеру документов и номеру телефона
             if (await _repository.Find(c=>(c.IdNumber == customer.IdNumber 

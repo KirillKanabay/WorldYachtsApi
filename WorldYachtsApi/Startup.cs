@@ -6,9 +6,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using WorldYachts.Data;
 using WorldYachts.Services;
+using WorldYachts.Services.Accessories;
 using WorldYachts.Services.Admin;
 using WorldYachts.Services.Boat;
 using WorldYachts.Services.BoatType;
+using WorldYachts.Services.BoatWood;
 using WorldYachts.Services.Customer;
 using WorldYachts.Services.SalesPerson;
 using WorldYachts.Services.User;
@@ -40,7 +42,8 @@ using WorldYachtsApi.Serialization;
             //Маппер пользователей
             services.AddAutoMapper(
                 typeof(UserMapper),
-                typeof(BoatMapper)
+                typeof(BoatMapper),
+                typeof(AccessoryMapper)
                 );
 
             //Сервис контроллеров
@@ -50,10 +53,11 @@ using WorldYachtsApi.Serialization;
             services.AddMvc().AddXmlSerializerFormatters();
             
             //Сервис кэширования ответов
-            services.AddResponseCaching();
+            //services.AddResponseCaching();
 
             //Сервис работы с репозиториями EF Core
             services.AddScoped(typeof(IEfRepository<>), typeof(EfRepository<>));
+            
             #region Сервисы работы со сущностями
 
             services.AddScoped<IUserService, UserService>();
@@ -62,8 +66,8 @@ using WorldYachtsApi.Serialization;
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IBoatService, BoatService>();
             services.AddScoped<IBoatTypeService, BoatTypeService>();
-            
-
+            services.AddScoped<IBoatWoodService, BoatWoodService>();
+            services.AddScoped<IAccessoryService, AccessoryService>();
             #endregion
 
         }

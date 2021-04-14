@@ -7,12 +7,12 @@ namespace WorldYachts.Services.User
 {
     public interface IUserService
     {
-        Task<ServiceResponse<AuthenticateResponse>> Authenticate(AuthenticateRequest model);
-        Task<ServiceResponse<Data.Entities.User>> Add(Data.Entities.User user);
+        Task<ServiceResponse<AuthenticateResponse>> AuthenticateAsync(AuthenticateRequest model);
+        Task<ServiceResponse<Data.Entities.User>> AddAsync(Data.Entities.User user);
         IEnumerable<Data.Entities.User> GetAll();
-        Task<ServiceResponse<Data.Entities.User>> GetById(int id);
-        Task<ServiceResponse<Data.Entities.User>> Update(int id, Data.Entities.User user);
-        Task<ServiceResponse<Data.Entities.User>> Delete(int id);
-        Task<bool> IsIdenticalEntity(Data.Entities.User user);
+        Task<ServiceResponse<Data.Entities.User>> GetByIdAsync(int id);
+        Task<ServiceResponse<Data.Entities.User>> UpdateAsync(int id, Data.Entities.User user);
+        Task<ServiceResponse<Data.Entities.User>> DeleteAsync(int id);
+        Task<bool> IsIdenticalEntityAsync(Data.Entities.User user);
     }
 }

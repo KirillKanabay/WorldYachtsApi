@@ -10,11 +10,11 @@ namespace WorldYachts.Services.Customer
 {
     public interface ICustomerService
     {
-        Task<ServiceResponse<Data.Entities.Customer>> Add(Data.Entities.Customer customer);
+        Task<ServiceResponse<Data.Entities.Customer>> AddAsync(Data.Entities.Customer customer);
         IEnumerable<Data.Entities.Customer> GetAll();
-        Task<ServiceResponse<Data.Entities.Customer>> GetById(int id);
-        Task<ServiceResponse<Data.Entities.Customer>> Update(int id, Data.Entities.Customer customer);
-        Task<ServiceResponse<Data.Entities.Customer>> Delete(int id);
-        Task<bool> IsIdenticalEntity(Data.Entities.Customer boat);
+        Task<ServiceResponse<Data.Entities.Customer>> GetByIdAsync(int id);
+        Task<ServiceResponse<Data.Entities.Customer>> UpdateAsync(int id, Data.Entities.Customer customer);
+        Task<ServiceResponse<Data.Entities.Customer>> DeleteAsync(int id);
+        Task<bool> IsIdenticalEntityAsync(Data.Entities.Customer customer);
     }
 }

@@ -5,6 +5,7 @@ namespace WorldYachts.Data
 {
     public class WorldYachtsDbContext:DbContext
     {
+        #region Таблицы сущностей
         /// <summary>
         /// Таблица партнеров
         /// </summary>
@@ -45,6 +46,10 @@ namespace WorldYachts.Data
         /// Таблица совместимости аксессуаров и лодок
         /// </summary>
         public DbSet<AccessoryToBoat> AccessoryToBoats { get; set; }
+
+
+        #endregion
+
         public WorldYachtsDbContext(DbContextOptions<WorldYachtsDbContext> options) : base(options)
         {
             //Database.EnsureDeleted();
@@ -53,13 +58,6 @@ namespace WorldYachts.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            #region Alternate keys
-
-            modelBuilder.Entity<Boat>().HasAlternateKey(e => e.Model);
-            modelBuilder.Entity<BoatType>().HasAlternateKey(e => e.Type);
-            modelBuilder.Entity<BoatWood>().HasAlternateKey(e => e.Wood);
-            
-            #endregion
 
             modelBuilder.Entity<Admin>().HasData(new Admin
             {
@@ -67,6 +65,7 @@ namespace WorldYachts.Data
                 FirstName = "Kirill",
                 SecondName = "Kanabay"
             });
+            
             modelBuilder.Entity<User>().HasData(new User
             {
                 Id = 1,
@@ -77,19 +76,23 @@ namespace WorldYachts.Data
                 UserId = 1
             });
             
-            modelBuilder.Entity<BoatWood>().HasData(
+            modelBuilder.Entity<BoatWood>().HasData(new []{
                 new BoatWood() {Id = 1, Wood = "Ель"},
                 new BoatWood() {Id = 2, Wood = "Береза"},
                 new BoatWood() {Id = 3, Wood = "Сосна"},
                 new BoatWood() {Id = 4, Wood = "Дуб"}
-            );
 
-            modelBuilder.Entity<BoatType>().HasData(
+            });
+
+            modelBuilder.Entity<BoatType>().HasData(new []{
                 new BoatType() {Id = 1, Type = "Шлюпка"},
                 new BoatType() {Id = 2, Type = "Парусная лодка"},
-                new BoatType() {Id = 3, Type = "Галера"}
-            );
+                new BoatType() {Id = 3, Type = "Галера"}});
 
+            modelBuilder.Entity<Partner>().HasData(new[]
+            {
+                new Partner(){Id = 1, Name = "ООО\"Мемфис\"", Address = "Испания, Барселона", City = "Барселона"}, 
+            });
         }
     }
 }

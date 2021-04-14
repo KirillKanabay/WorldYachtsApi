@@ -27,13 +27,13 @@ namespace WorldYachtsApi.Middlewares
 
             if (token != null)
             {
-                AttachUserToContext(context, userService, token);
+                await AttachUserToContext(context, userService, token);
             }
 
             await _next(context);
         }
 
-        private void AttachUserToContext(HttpContext context, IUserService userService, string token)
+        private async Task AttachUserToContext(HttpContext context, IUserService userService, string token)
         {
             try
             {
@@ -53,7 +53,8 @@ namespace WorldYachtsApi.Middlewares
                 var jwtToken = (JwtSecurityToken)validatedToken;
                 var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
 
-                context.Items["User"] = userService.GetById(userId);
+                var userResponse = await userService.GetByIdAsync(userId);
+                context.Items["User"] = userResponse.Data;
             }
             catch (Exception e)
             {

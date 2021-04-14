@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using WorldYachts.Data.Entities;
 using WorldYachts.Services.BoatType;
-using WorldYachts.Services.Models;
+using WorldYachts.Services.BoatWood;
 using WorldYachtsApi.Helpers;
 using WorldYachtsApi.Models;
 
@@ -14,31 +14,31 @@ using WorldYachtsApi.Models;
 
 namespace WorldYachtsApi.Controllers
 {
-    [Route("api/boats/types")]
+    [Route("api/boats/woods")]
     [ApiController]
-    public class BoatTypesController : ControllerBase
+    public class BoatWoodsController : ControllerBase
     {
-        private readonly IBoatTypeService _boatTypeService;
+        private readonly IBoatWoodService _boatWoodService;
         private readonly IMapper _mapper;
-        public BoatTypesController(IBoatTypeService boatTypeService, IMapper mapper)
+        public BoatWoodsController(IBoatWoodService boatWoodService, IMapper mapper)
         {
-            _boatTypeService = boatTypeService;
+            _boatWoodService = boatWoodService;
             _mapper = mapper;
         }
-        
-        // GET: api/boats/types
+
+        // GET: api/boats/woods
         [HttpGet]
         public IActionResult Get()
         {
-            var response = _boatTypeService.GetAll();
+            var response = _boatWoodService.GetAll();
             return Ok(response);
         }
 
-        // GET: api/boats/types/{id}
+        // GET: api/boats/woods/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var response = await _boatTypeService.GetByIdAsync(id);
+            var response = await _boatWoodService.GetByIdAsync(id);
             if (!response.IsSuccess)
             {
                 return BadRequest(response.Message);
@@ -47,14 +47,14 @@ namespace WorldYachtsApi.Controllers
             return Ok(response.Data);
         }
 
-        // POST api/boats/types
+        // POST api/boats/woods
         [HttpPost]
         [Authorize("Admin", "Sales Person")]
-        public async Task<IActionResult> Post([FromBody] BoatTypeModel boatTypeModel)
+        public async Task<IActionResult> Post([FromBody] BoatWoodModel boatWoodModel)
         {
-            var boatType = _mapper.Map<BoatType>(boatTypeModel);
+            var boatWood = _mapper.Map<BoatWood>(boatWoodModel);
 
-            var response = await _boatTypeService.AddAsync(boatType);
+            var response = await _boatWoodService.AddAsync(boatWood);
 
             if (!response.IsSuccess)
             {
@@ -64,14 +64,14 @@ namespace WorldYachtsApi.Controllers
             return Ok(response.Data);
         }
 
-        // PUT api/boats/types/{id}
+        // PUT api/boats/woods/{id}
         [HttpPut("{id}")]
         [Authorize("Admin", "Sales Person")]
-        public async Task<IActionResult> Put(int id, [FromBody] BoatTypeModel boatTypeModel)
+        public async Task<IActionResult> Put(int id, [FromBody] BoatWoodModel boatWoodModel)
         {
-            var boatType = _mapper.Map<BoatType>(boatTypeModel);
+            var boatWood = _mapper.Map<BoatWood>(boatWoodModel);
 
-            var response = await _boatTypeService.UpdateAsync(id, boatType);
+            var response = await _boatWoodService.UpdateAsync(id, boatWood);
 
             if (!response.IsSuccess)
             {
@@ -81,12 +81,12 @@ namespace WorldYachtsApi.Controllers
             return Ok(response.Data);
         }
 
-        // DELETE api/boats/types/{id}
+        // DELETE api/boats/woods/{id}
         [HttpDelete("{id}")]
         [Authorize("Admin", "Sales Person")]
         public async Task<IActionResult> Delete(int id)
         {
-            var response = await _boatTypeService.DeleteAsync(id);
+            var response = await _boatWoodService.DeleteAsync(id);
 
             if (!response.IsSuccess)
             {

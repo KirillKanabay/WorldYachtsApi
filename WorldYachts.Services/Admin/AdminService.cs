@@ -17,7 +17,7 @@ namespace WorldYachts.Services.Admin
         {
             return _repository.GetAll();
         }
-        public async Task<ServiceResponse<Data.Entities.Admin>> GetById(int id)
+        public async Task<ServiceResponse<Data.Entities.Admin>> GetByIdAsync(int id)
         {
             var admin = await _repository.GetById(id);
 

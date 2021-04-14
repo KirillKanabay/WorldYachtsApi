@@ -25,14 +25,14 @@ namespace WorldYachtsApi.Controllers
         [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Client)]
         public IActionResult Get(string sort)
         {
-            IQueryable<Partner> partners = sort switch
-            {
-                "desc" => _dbContext.Partners.OrderByDescending(p => p.CreatedAt),
-                "asc" => _dbContext.Partners.OrderBy(p => p.CreatedAt),
-                _ => _dbContext.Partners
-            };
-
-            return Ok(partners);
+            //IQueryable<Partner> partners = sort switch
+            //{
+            //    "desc" => _dbContext.Partners.OrderByDescending(p => p.CreatedAt),
+            //    "asc" => _dbContext.Partners.OrderBy(p => p.CreatedAt),
+            //    _ => _dbContext.Partners
+            //};
+            
+            return Ok(_dbContext.Partners);
         }
 
         [HttpGet("[action]")]
@@ -72,7 +72,7 @@ namespace WorldYachtsApi.Controllers
         {
             var now = DateTime.UtcNow;
             
-            partner.CreatedAt = now;
+            //partner.CreatedAt = now;
             
             _dbContext.Partners.Add(partner);
             _dbContext.SaveChanges();
