@@ -14,15 +14,13 @@ namespace WorldYachts.Data.Entities
         /// </summary>
         [Required] public int AccessoryId { get; set; }
 
-        // /// <summary>
-        // /// Ссылка на лодку
-        // /// </summary>
-        [ForeignKey("BoatId")]
+        /// <summary>
+        /// Ссылка на лодку
+        /// </summary>
         public virtual Boat Boat { get; set; }
-        // /// <summary>
-        // /// Ссылка на аксессуар
-        // /// </summary>
-        [ForeignKey("AccessoryId")]
+        /// <summary>
+        /// Ссылка на аксессуар
+        /// </summary>
         public virtual Accessory Accessory { get; set; }
     }
 }

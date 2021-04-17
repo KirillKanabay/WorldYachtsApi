@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
 using WorldYachts.Data.Entities;
 
 namespace WorldYachts.Data
@@ -58,6 +59,15 @@ namespace WorldYachts.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<AccessoryToBoat>()
+                .HasOne(a => a.Accessory)
+                .WithMany(t => t.AccessoryToBoat)
+                .HasForeignKey(m => m.AccessoryId);
+
+            modelBuilder.Entity<AccessoryToBoat>()
+                .HasOne(a => a.Accessory)
+                .WithMany(t => t.AccessoryToBoat)
+                .HasForeignKey(m => m.AccessoryId);
 
             modelBuilder.Entity<Admin>().HasData(new Admin
             {

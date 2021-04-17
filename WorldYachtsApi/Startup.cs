@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using WorldYachts.Data;
 using WorldYachts.Services;
 using WorldYachts.Services.Accessories;
+using WorldYachts.Services.AccessoryToBoat;
 using WorldYachts.Services.Admin;
 using WorldYachts.Services.Boat;
 using WorldYachts.Services.BoatType;
@@ -68,6 +69,8 @@ using WorldYachtsApi.Serialization;
             services.AddScoped<IBoatTypeService, BoatTypeService>();
             services.AddScoped<IBoatWoodService, BoatWoodService>();
             services.AddScoped<IAccessoryService, AccessoryService>();
+            services.AddScoped<IAccessoryToBoatService, AccessoryToBoatService>();
+
             #endregion
 
         }
