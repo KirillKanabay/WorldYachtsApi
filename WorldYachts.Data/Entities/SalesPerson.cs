@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace WorldYachts.Data.Entities
 {
@@ -18,5 +19,7 @@ namespace WorldYachts.Data.Entities
         /// E-mail менеджера
         /// </summary>
         [Required] public string Email { get; set; }
+
+        public virtual IEnumerable<Order> Orders { get; set; }
     }
 }

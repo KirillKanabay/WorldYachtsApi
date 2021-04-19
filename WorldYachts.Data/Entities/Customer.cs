@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace WorldYachts.Data.Entities
@@ -57,5 +58,7 @@ namespace WorldYachts.Data.Entities
         /// </summary>
         [Required]
         public string IdDocumentName { get; set; }
+
+        public virtual IEnumerable<Order> Orders { get; set; }
     }
 }

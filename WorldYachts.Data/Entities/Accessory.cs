@@ -39,5 +39,7 @@ namespace WorldYachts.Data.Entities
         /// </summary>
         [ForeignKey("AccessoryId")]
         public virtual List<AccessoryToBoat> AccessoryToBoat { get; set; }
+
+        public virtual IEnumerable<OrderDetail> OrderDetails { get; set; }
     }
 }

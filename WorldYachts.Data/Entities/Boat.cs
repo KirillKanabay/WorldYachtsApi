@@ -65,12 +65,7 @@ namespace WorldYachts.Data.Entities
         [ForeignKey("WoodId")]
         public virtual BoatWood BoatWood { get; set; }
 
+        public virtual IEnumerable<Order> Orders { get; set; }
         #endregion
-
-        public Boat Clone()
-        {
-            return (Boat)MemberwiseClone();
-        }
-
     }
 }
