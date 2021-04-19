@@ -42,11 +42,12 @@ using WorldYachtsApi.Serialization;
                     b => b.MigrationsAssembly("WorldYachtsApi"));
             });
 
-            //Маппер пользователей
+            //Мапперы
             services.AddAutoMapper(
                 typeof(UserMapper),
                 typeof(BoatMapper),
-                typeof(AccessoryMapper)
+                typeof(AccessoryMapper),
+                typeof(OrderMapper)
                 );
 
             //Сервис контроллеров
