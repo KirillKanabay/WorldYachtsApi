@@ -13,6 +13,8 @@ using WorldYachts.Services.Boat;
 using WorldYachts.Services.BoatType;
 using WorldYachts.Services.BoatWood;
 using WorldYachts.Services.Customer;
+using WorldYachts.Services.Order;
+using WorldYachts.Services.OrderDetails;
 using WorldYachts.Services.SalesPerson;
 using WorldYachts.Services.User;
 using WorldYachtsApi.Middlewares;
@@ -70,6 +72,8 @@ using WorldYachtsApi.Serialization;
             services.AddScoped<IBoatWoodService, BoatWoodService>();
             services.AddScoped<IAccessoryService, AccessoryService>();
             services.AddScoped<IAccessoryToBoatService, AccessoryToBoatService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IOrderDetailService, OrderDetailService>();
 
             #endregion
 
