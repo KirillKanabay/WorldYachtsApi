@@ -37,7 +37,6 @@ namespace WorldYachtsApi.Serialization
             CreateMap<SalesPersonModel, SalesPerson>()
                 .ForMember(dst => dst.FirstName, opt => opt.MapFrom(src => src.FirstName))
                 .ForMember(dst => dst.SecondName, opt => opt.MapFrom(src => src.SecondName))
-                .ForMember(dst => dst.Email, opt => opt.MapFrom(src => src.Email))
                 ;
 
             //SalesPersonModel -> User

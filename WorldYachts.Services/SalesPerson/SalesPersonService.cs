@@ -107,13 +107,7 @@ namespace WorldYachts.Services.SalesPerson
 
         public async Task<bool> IsIdenticalEntityAsync(Data.Entities.SalesPerson salesPerson)
         {
-            //Проверка по номеру документов и номеру телефона
-            if (await _repository.Find(c => c.Email == salesPerson.Email && c.Id != salesPerson.Id) != null)
-            {
-                return true;
-            }
-
-            return false;
+            return true;
         }
     }
 }
