@@ -57,7 +57,7 @@ namespace WorldYachts.Data.Entities
         #region Связи
 
         [ForeignKey("BoatId")]
-        public virtual List<AccessoryToBoat> AccessoryToBoat { get; set; }
+        public virtual IEnumerable<AccessoryToBoat> AccessoryToBoat { get; set; }
 
         [ForeignKey("TypeId")]
         public virtual BoatType BoatType { get; set; }

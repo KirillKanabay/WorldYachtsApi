@@ -68,7 +68,7 @@ namespace WorldYachts.Data.Entities
         /// <summary>
         /// Ссылка на список деталей заказа
         /// </summary>
-        public virtual List<OrderDetail> OrderDetails { get; set; }
+        public virtual IEnumerable<OrderDetail> OrderDetails { get; set; }
 
         #endregion
 

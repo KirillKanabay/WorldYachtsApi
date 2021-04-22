@@ -38,8 +38,7 @@ namespace WorldYachts.Data.Entities
         /// Ссылка на доступные аксессуары для определенных лодок
         /// </summary>
         [ForeignKey("AccessoryId")]
-        public virtual List<AccessoryToBoat> AccessoryToBoat { get; set; }
-
+        public virtual IEnumerable<AccessoryToBoat> AccessoryToBoat { get; set; }
         public virtual IEnumerable<OrderDetail> OrderDetails { get; set; }
     }
 }
