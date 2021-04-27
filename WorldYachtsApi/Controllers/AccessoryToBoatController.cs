@@ -11,7 +11,7 @@ using WorldYachtsApi.Models;
 
 namespace WorldYachtsApi.Controllers
 {
-    [Route("api/accessories/compatibilities")]
+    [Route("api/accessories/fits")]
     [ApiController]
     public class AccessoryToBoatController : ControllerBase
     {
