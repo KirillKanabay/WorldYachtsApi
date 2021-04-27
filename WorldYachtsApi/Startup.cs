@@ -15,6 +15,7 @@ using WorldYachts.Services.BoatWood;
 using WorldYachts.Services.Customer;
 using WorldYachts.Services.Order;
 using WorldYachts.Services.OrderDetails;
+using WorldYachts.Services.Partner;
 using WorldYachts.Services.SalesPerson;
 using WorldYachts.Services.User;
 using WorldYachtsApi.Middlewares;
@@ -54,10 +55,10 @@ using WorldYachtsApi.Serialization;
             services.AddControllers();
             
             //Сервис сериализации ответа в XML формат
-            services.AddMvc().AddXmlSerializerFormatters();
-            
+            services.AddMvc().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
             //Сервис кэширования ответов
-            //services.AddResponseCaching();
+            services.AddResponseCaching();
 
             //Сервис работы с репозиториями EF Core
             services.AddScoped(typeof(IEfRepository<>), typeof(EfRepository<>));
@@ -75,6 +76,7 @@ using WorldYachtsApi.Serialization;
             services.AddScoped<IAccessoryToBoatService, AccessoryToBoatService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IOrderDetailService, OrderDetailService>();
+            services.AddScoped<IPartnerService, PartnerService>();
 
             #endregion
 
