@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using WorldYachts.Data.Entities;
 
 namespace WorldYachts.Data
@@ -152,6 +149,18 @@ namespace WorldYachts.Data
                 new Partner(){Id = 5, Name = "ООО\"Призманти\"", Address = "Саратов, ул. Советская, д. 87", City = "Саратов"},
                 new Partner(){Id = 6, Name = "ООО\"Кабель интрудшекн\"", Address = "г. Москва, Войковская ул., д. 13А", City = "Москва"},
                 new Partner(){Id = 7, Name = "ООО\"Картова елице\"", Address = "г. Владивосток, ул. Карелии, д.2", City = "Владивосток"},
+            });
+        }
+
+        public static void SeedAccessories(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Accessory>().HasData(new[]
+            {
+                new Accessory()
+                {
+                    Id = 1, Name = "Черпак", Description = "Деревянный черпак, красный", Price = 2500, Vat = 18,
+                    Inventory = 10, PartnerId = 1
+                },
             });
         }
     }

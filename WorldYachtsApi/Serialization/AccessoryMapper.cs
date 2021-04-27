@@ -45,6 +45,13 @@ namespace WorldYachtsApi.Serialization
                 .ForMember(dst => dst.AccessoryId, opt => opt.MapFrom(src => src.AccessoryId))
                 .ForMember(dst => dst.Id, opt => opt.Ignore());
                 ;
+
+            //Partner -> Partner
+            CreateMap<Partner, Partner>()
+                .ForMember(dst => dst.City, opt => opt.MapFrom(src => src.City))
+                .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dst => dst.Address, opt => opt.MapFrom(src => src.Address))
+                ;
         }
     }
 }

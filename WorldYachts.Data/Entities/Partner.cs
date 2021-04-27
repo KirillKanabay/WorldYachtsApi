@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace WorldYachts.Data.Entities
@@ -25,5 +25,7 @@ namespace WorldYachts.Data.Entities
         [Required]
         [StringLength(64)]
         public string City { get; set; }
+        
+        public IEnumerable<Accessory> Accessories { get; set; }
     }
 }

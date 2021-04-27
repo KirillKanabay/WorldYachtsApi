@@ -62,13 +62,22 @@ namespace WorldYachts.Data
 
         public WorldYachtsDbContext(DbContextOptions<WorldYachtsDbContext> options) : base(options)
         {
-            Database.EnsureDeleted();
-            Database.EnsureCreated();
+            //Database.EnsureDeleted();
+            //Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             #region Связи
+
+            #region Accessory
+
+            modelBuilder.Entity<Accessory>()
+                .HasOne(a => a.Partner)
+                .WithMany(p => p.Accessories)
+                .HasForeignKey(a => a.PartnerId);
+
+            #endregion
 
             #region AccessoryToBoat
 
@@ -119,6 +128,7 @@ namespace WorldYachts.Data
             modelBuilder.SeedBoatTypes();
             modelBuilder.SeedBoats();
             modelBuilder.SeedPartners();
+            modelBuilder.SeedAccessories();
         }
     }
 }
