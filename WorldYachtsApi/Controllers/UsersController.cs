@@ -102,8 +102,7 @@ namespace WorldYachtsApi.Controllers
             var user = _mapper.Map<User>(salesPersonModel);
 
             //Если данные менеджера или пользовательские данные(Почта, логин) уже существуют возвращаем ошибку 
-            if (await _salesPersonService.IsIdenticalEntityAsync(salesPerson)
-                || await _userService.IsIdenticalEntityAsync(user))
+            if (await _userService.IsIdenticalEntityAsync(user))
             {
                 return BadRequest("An user with such data already exists");
             }
@@ -124,12 +123,7 @@ namespace WorldYachtsApi.Controllers
                 return BadRequest(userRegisterResponse.Message);
             }
 
-            //Сразу аутентифицируем зарегистрированного пользователя
-            return await Authenticate(new AuthenticateRequest()
-            {
-                Username = userRegisterResponse.Data.Username,
-                Password = userRegisterResponse.Data.Password
-            });
+            return Ok(salesPersonResponse.Data);
         }
         #endregion
 
