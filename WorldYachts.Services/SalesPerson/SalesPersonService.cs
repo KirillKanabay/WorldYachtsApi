@@ -46,7 +46,6 @@ namespace WorldYachts.Services.SalesPerson
                     Time = now
                 };
             }
-            
         }
 
         public IEnumerable<Data.Entities.SalesPerson> GetAll()
