@@ -10,6 +10,5 @@ namespace WorldYachts.Services.SalesPerson
         Task<ServiceResponse<Data.Entities.SalesPerson>> GetByIdAsync(int id);
         Task<ServiceResponse<Data.Entities.SalesPerson>> UpdateAsync(int id, Data.Entities.SalesPerson salesPerson);
         Task<ServiceResponse<Data.Entities.SalesPerson>> DeleteAsync(int id);
-        Task<bool> IsIdenticalEntityAsync(Data.Entities.SalesPerson salesPerson);
     }
 }

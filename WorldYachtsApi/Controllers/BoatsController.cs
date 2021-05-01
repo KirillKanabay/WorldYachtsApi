@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.Extensions.Logging;
 using WorldYachts.Data.Entities;
 using WorldYachts.Services.Boat;
-using WorldYachts.Services.BoatType;
-using WorldYachts.Services.Models;
 using WorldYachtsApi.Helpers;
 using WorldYachtsApi.Models;
 
@@ -21,10 +17,12 @@ namespace WorldYachtsApi.Controllers
     {
         private readonly IBoatService _boatService;
         private readonly IMapper _mapper;
-        public BoatsController(IBoatService boatService, IMapper mapper)
+        private readonly ILogger<BoatsController> _logger;
+        public BoatsController(IBoatService boatService, IMapper mapper, ILogger<BoatsController> logger)
         {
             _boatService = boatService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         #region Boat
@@ -33,6 +31,7 @@ namespace WorldYachtsApi.Controllers
         [HttpGet]
         public IActionResult Get()
         {
+            _logger.LogInformation("Getting all boats");
             return Ok(_boatService.GetAll());
         }
 
@@ -40,9 +39,11 @@ namespace WorldYachtsApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
+            _logger.LogInformation($"Getting boat by id:{id}");
             var response = await _boatService.GetByIdAsync(id);
             if (!response.IsSuccess)
             {
+                _logger.LogError(response.Message);
                 return BadRequest(response.Message);
             }
 
@@ -52,14 +53,15 @@ namespace WorldYachtsApi.Controllers
         // POST api/<BoatsController>
         [HttpPost]
         [Authorize("Admin", "Sales Person")]
-        public async Task<IActionResult> Post([FromBody] BoatModel boatModel)
+        public async Task<IActionResult> Post([FromBody] Boat boat)
         {
-            var boat = _mapper.Map<Boat>(boatModel);
-
+            //var entity = _mapper.Map<Boat>(boat);
+            _logger.LogInformation($"Adding boat(Name:{boat.Model})");
             var response = await _boatService.AddAsync(boat);
 
             if (!response.IsSuccess)
             {
+                _logger.LogError(response.Message);
                 return BadRequest(response.Message);
             }
 
@@ -69,14 +71,14 @@ namespace WorldYachtsApi.Controllers
         // PUT api/<BoatsController>/5
         [HttpPut("{id}")]
         [Authorize("Admin", "Sales Person")]
-        public async Task<IActionResult> Put(int id, [FromBody] BoatModel boatModel)
+        public async Task<IActionResult> Put(int id, [FromBody] Boat boat)
         {
-            var boat = _mapper.Map<Boat>(boatModel);
-
+            _logger.LogInformation($"Updating boat (id:{id})");
             var response = await _boatService.UpdateAsync(id, boat);
 
             if (!response.IsSuccess)
             {
+                _logger.LogError(response.Message);
                 return BadRequest(response.Message);
             }
 
@@ -88,10 +90,12 @@ namespace WorldYachtsApi.Controllers
         [Authorize("Admin", "Sales Person")]
         public async Task<IActionResult> Delete(int id)
         {
+            _logger.LogInformation($"Deleting boat (id:{id})");
             var response = await _boatService.DeleteAsync(id);
             
             if (!response.IsSuccess)
             {
+                _logger.LogError(response.Message);
                 return BadRequest(response.Message);
             }
 

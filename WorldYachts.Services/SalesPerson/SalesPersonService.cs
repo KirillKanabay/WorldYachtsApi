@@ -1,60 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using WorldYachts.Data;
-using WorldYachts.Services.Authenticate;
-using WorldYachts.Services.Models;
-using WorldYachts.Services.Models.Authenticate;
-using WorldYachts.Services.User;
 
 namespace WorldYachts.Services.SalesPerson
 {
-    public class SalesPersonService:ISalesPersonService
+    public class SalesPersonService : ISalesPersonService
     {
-        private readonly IEfRepository<Data.Entities.SalesPerson> _repository;
-        public SalesPersonService(IEfRepository<Data.Entities.SalesPerson> repository)
+        private readonly WorldYachtsDbContext _db;
+        private readonly IMapper _mapper;
+
+        public SalesPersonService(WorldYachtsDbContext dbContext, IMapper mapper)
         {
-            _repository = repository;
+            _db = dbContext;
+            _mapper = mapper;
         }
 
         public async Task<ServiceResponse<Data.Entities.SalesPerson>> AddAsync(Data.Entities.SalesPerson salesPerson)
         {
             var now = DateTime.UtcNow;
-            if (await IsIdenticalEntityAsync(salesPerson))
+            try
+            {
+                var addedSalesPerson = (await _db.SalesPersons.AddAsync(salesPerson)).Entity;
+                await _db.SaveChangesAsync();
+
+                return new ServiceResponse<Data.Entities.SalesPerson>()
+                {
+                    IsSuccess = true,
+                    Data = addedSalesPerson,
+                    Message = $"SalesPerson (id:{addedSalesPerson.Id} First name:{addedSalesPerson.FirstName} " +
+                              $"Second Name:{addedSalesPerson.SecondName}) added",
+                    Time = now
+                };
+            }
+            catch (Exception e)
             {
                 return new ServiceResponse<Data.Entities.SalesPerson>()
                 {
                     IsSuccess = false,
                     Data = salesPerson,
-                    Message = "Sales person already exist.",
+                    Message = $"{e.Message} {Environment.NewLine}" +
+                              $"{e.InnerException?.Message}",
                     Time = now
                 };
             }
-
-            var addedSalesPerson = await _repository.Add(salesPerson);
-
-            return new ServiceResponse<Data.Entities.SalesPerson>()
-            {
-                IsSuccess = true,
-                Data = addedSalesPerson,
-                Message = $"SalesPerson (id:{addedSalesPerson.Id} First name:{addedSalesPerson.FirstName} " +
-                          $"Second Name:{addedSalesPerson.SecondName}) added",
-                Time = now
-            };
+            
         }
 
         public IEnumerable<Data.Entities.SalesPerson> GetAll()
         {
-            return _repository.GetAll();
+            return _db.SalesPersons
+                .Include(sp => sp.Orders);
         }
 
         public async Task<ServiceResponse<Data.Entities.SalesPerson>> GetByIdAsync(int id)
         {
-            var salesPerson = await _repository.GetById(id);
+            var salesPerson = await _db.SalesPersons
+                .Include(sp => sp.Orders)
+                .FirstOrDefaultAsync(sp => sp.Id == id);
 
             return new ServiceResponse<Data.Entities.SalesPerson>()
             {
@@ -65,49 +70,71 @@ namespace WorldYachts.Services.SalesPerson
             };
         }
 
-        public async Task<ServiceResponse<Data.Entities.SalesPerson>> UpdateAsync(int id, Data.Entities.SalesPerson salesPerson)
+        public async Task<ServiceResponse<Data.Entities.SalesPerson>> UpdateAsync(int id,
+            Data.Entities.SalesPerson salesPerson)
         {
             var now = DateTime.UtcNow;
-            if (await IsIdenticalEntityAsync(salesPerson))
+            try
+            {
+                var updatedSalesPerson = await _db.SalesPersons.FindAsync(id);
+                updatedSalesPerson = _mapper.Map(salesPerson, updatedSalesPerson);
+                _db.SalesPersons.Update(updatedSalesPerson);
+                await _db.SaveChangesAsync();
+
+                return new ServiceResponse<Data.Entities.SalesPerson>()
+                {
+                    IsSuccess = true,
+                    Data = updatedSalesPerson,
+                    Message = $"Sales person (id:{updatedSalesPerson.Id} First name:{updatedSalesPerson.FirstName} " +
+                              $"Second Name:{updatedSalesPerson.SecondName}) updated",
+                    Time = now
+                };
+            }
+            catch (Exception e)
             {
                 return new ServiceResponse<Data.Entities.SalesPerson>()
                 {
                     IsSuccess = false,
                     Data = salesPerson,
-                    Message = $"Sales person already exist.",
+                    Message = $"{e.Message} {Environment.NewLine}" +
+                              $"{e.InnerException?.Message}",
                     Time = now
                 };
             }
-
-            var updatedSalesPerson = await _repository.Update(id, salesPerson);
-
-            return new ServiceResponse<Data.Entities.SalesPerson>()
-            {
-                IsSuccess = true,
-                Data = updatedSalesPerson,
-                Message = $"Sales person (id:{updatedSalesPerson.Id} First name:{updatedSalesPerson.FirstName} " +
-                          $"Second Name:{updatedSalesPerson.SecondName}) updated",
-                Time = now
-            };
         }
 
         public async Task<ServiceResponse<Data.Entities.SalesPerson>> DeleteAsync(int id)
         {
             var now = DateTime.UtcNow;
-            var deletedSalesPerson = await _repository.Delete(id);
-
-            return new ServiceResponse<Data.Entities.SalesPerson>()
+            try
             {
-                IsSuccess = deletedSalesPerson != null,
-                Data = deletedSalesPerson,
-                Message = deletedSalesPerson != null ? $"Sales person (id:{id}) deleted" : "Sales person not found",
-                Time = now,
-            };
+                var salesPerson = await _db.SalesPersons.FindAsync(id);
+
+                var deletedSalesPerson = _db.SalesPersons.Remove(salesPerson).Entity;
+                await _db.SaveChangesAsync();
+
+                return new ServiceResponse<Data.Entities.SalesPerson>()
+                {
+                    IsSuccess = deletedSalesPerson != null,
+                    Data = deletedSalesPerson,
+                    Message = deletedSalesPerson != null
+                        ? $"Sales person (id:{id}, {deletedSalesPerson.FirstName} {deletedSalesPerson.SecondName}) deleted"
+                        : "Sales person not found",
+                    Time = now,
+                };
+            }
+            catch (Exception e)
+            {
+                return new ServiceResponse<Data.Entities.SalesPerson>()
+                {
+                    IsSuccess = false,
+                    Data = null,
+                    Message = $"{e.Message} {Environment.NewLine}" +
+                              $"{e.InnerException?.Message}",
+                    Time = now
+                };
+            }
         }
 
-        public async Task<bool> IsIdenticalEntityAsync(Data.Entities.SalesPerson salesPerson)
-        {
-            return true;
-        }
     }
 }
