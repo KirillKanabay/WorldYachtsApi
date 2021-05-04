@@ -33,6 +33,19 @@ namespace WorldYachtsApi.Serialization
                 .ForMember(dst => dst.Id, opt => opt.Ignore())
                 ;
 
+            //Customer -> Customer
+            CreateMap<Customer, Customer>()
+                .ForMember(dst => dst.FirstName, opt => opt.MapFrom(src => src.FirstName))
+                .ForMember(dst => dst.SecondName, opt => opt.MapFrom(src => src.SecondName))
+                .ForMember(dst => dst.BirthDate, opt => opt.MapFrom(src => src.BirthDate))
+                .ForMember(dst => dst.Address, opt => opt.MapFrom(src => src.Address))
+                .ForMember(dst => dst.City, opt => opt.MapFrom(src => src.City))
+                .ForMember(dst => dst.Phone, opt => opt.MapFrom(src => src.Phone))
+                .ForMember(dst => dst.OrganizationName, opt => opt.MapFrom(src => src.OrganizationName))
+                .ForMember(dst => dst.IdNumber, opt => opt.MapFrom(src => src.IdNumber))
+                .ForMember(dst => dst.IdDocumentName, opt => opt.MapFrom(src => src.IdDocumentName))
+                ;
+
             //SalesPerson -> SalesPerson
             CreateMap<SalesPerson, SalesPerson>()
                 .ForMember(dst => dst.FirstName, opt => opt.MapFrom(src => src.FirstName))
