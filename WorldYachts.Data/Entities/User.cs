@@ -4,6 +4,7 @@ namespace WorldYachts.Data.Entities
 {
     public class User : BaseEntity
     {
+        [Required]
         public string Username { get; set; }
         [Required]
         public string Email { get; set; }

@@ -7,11 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using WorldYachts.Data;
 using WorldYachts.Services.Authenticate;
-using WorldYachts.Services.Customer;
 using WorldYachts.Services.Helpers;
-using WorldYachts.Services.Models;
 using WorldYachts.Services.Models.Authenticate;
-using WorldYachts.Services.SalesPerson;
 
 namespace WorldYachts.Services.User
 {
@@ -19,13 +16,15 @@ namespace WorldYachts.Services.User
     {
         #region Поля
         private readonly IConfiguration _configuration;
-        private readonly IEfRepository<Data.Entities.User> _repository;
+        private readonly WorldYachtsDbContext _db;
+        private readonly IMapper _mapper;
         #endregion
 
-        public UserService(IConfiguration configuration, IEfRepository<Data.Entities.User> repository)
+        public UserService(IConfiguration configuration, WorldYachtsDbContext dbContext, IMapper mapper)
         {
             _configuration = configuration;
-            _repository = repository;
+            _db = dbContext;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -35,7 +34,7 @@ namespace WorldYachts.Services.User
         /// <returns></returns>
         public async Task<ServiceResponse<AuthenticateResponse>> AuthenticateAsync(AuthenticateRequest model)
         {
-            var user = await _repository.Find(x => x.Username == model.Username && x.Password == model.Password);
+            var user = GetAll().FirstOrDefault(x => x.Username == model.Username && x.Password == model.Password);
             
             return new ServiceResponse<AuthenticateResponse>
             {
@@ -54,26 +53,42 @@ namespace WorldYachts.Services.User
         public async Task<ServiceResponse<Data.Entities.User>> AddAsync(Data.Entities.User user)
         {
             var now = DateTime.UtcNow;
-            if (await IsIdenticalEntityAsync(user))
+            try
+            {
+                if (await IsIdenticalEntityAsync(user))
+                {
+                    return new ServiceResponse<Data.Entities.User>()
+                    {
+                        IsSuccess = false,
+                        Data = user,
+                        Message = "User already exist.",
+                        Time = now
+                    };
+                }
+
+                var addedUser = (await _db.Users.AddAsync(user)).Entity;
+                await _db.SaveChangesAsync();
+
+                return new ServiceResponse<Data.Entities.User>()
+                {
+                    IsSuccess = true,
+                    Data = addedUser,
+                    Message = $"User (id:{addedUser.Id} Username:{addedUser.Username} added",
+                    Time = now
+                };
+            }
+            catch (Exception e)
             {
                 return new ServiceResponse<Data.Entities.User>()
                 {
                     IsSuccess = false,
                     Data = user,
-                    Message = "User already exist.",
+                    Message = $"{e.Message} {Environment.NewLine}" +
+                              $"{e.InnerException?.Message}",
                     Time = now
                 };
             }
-
-            var addedUser = await _repository.Add(user);
-
-            return new ServiceResponse<Data.Entities.User>()
-            {
-                IsSuccess = true,
-                Data = addedUser,
-                Message = $"Customer (id:{addedUser.Id} Username:{addedUser.Username} added",
-                Time = now
-            };
+            
         }
 
         /// <summary>
@@ -82,7 +97,7 @@ namespace WorldYachts.Services.User
         /// <returns></returns>
         public IEnumerable<Data.Entities.User> GetAll()
         {
-            return _repository.GetAll();
+            return _db.Users;
         }
 
         /// <summary>
@@ -92,7 +107,7 @@ namespace WorldYachts.Services.User
         /// <returns></returns>
         public async Task<ServiceResponse<Data.Entities.User>> GetByIdAsync(int id)
         {
-            var user = await _repository.GetById(id);
+            var user = await _db.Users.FindAsync(id);
 
             return new ServiceResponse<Data.Entities.User>()
             {
@@ -106,45 +121,80 @@ namespace WorldYachts.Services.User
         public async Task<ServiceResponse<Data.Entities.User>> UpdateAsync(int id, Data.Entities.User user)
         {
             var now = DateTime.UtcNow;
-            if (await IsIdenticalEntityAsync(user))
+            try
+            {
+                if (await IsIdenticalEntityAsync(user))
+                {
+                    return new ServiceResponse<Data.Entities.User>()
+                    {
+                        IsSuccess = false,
+                        Data = user,
+                        Message = $"User already exist.",
+                        Time = now
+                    };
+                }
+
+                var updatedUser = await _db.Users.FindAsync(id);
+                updatedUser = _mapper.Map(user, updatedUser);
+                _db.Users.Update(updatedUser);
+                await _db.SaveChangesAsync();
+
+                return new ServiceResponse<Data.Entities.User>()
+                {
+                    IsSuccess = true,
+                    Data = updatedUser,
+                    Message = $"User (id:{updatedUser.Id} Username:{updatedUser.Username}) updated.",
+                    Time = now
+                };
+            }
+            catch (Exception e)
             {
                 return new ServiceResponse<Data.Entities.User>()
                 {
                     IsSuccess = false,
                     Data = user,
-                    Message = $"User already exist.",
+                    Message = $"{e.Message} {Environment.NewLine}" +
+                              $"{e.InnerException?.Message}",
                     Time = now
                 };
             }
-
-            var updatedUser = await _repository.Update(id, user);
-
-            return new ServiceResponse<Data.Entities.User>()
-            {
-                IsSuccess = true,
-                Data = updatedUser,
-                Message = $"User (id:{updatedUser.Id} Username:{updatedUser.Username}) updated.",
-                Time = now
-            };
+            
         }
 
         public async Task<ServiceResponse<Data.Entities.User>> DeleteAsync(int id)
         {
             var now = DateTime.UtcNow;
-            var deletedUser = await _repository.Delete(id);
-
-            return new ServiceResponse<Data.Entities.User>()
+            try
             {
-                IsSuccess = deletedUser != null,
-                Data = deletedUser,
-                Message = deletedUser != null ? $"User (id:{id}) deleted" : "User not found",
-                Time = now,
-            };
+                var user = await _db.Users.FindAsync(id);
+                var deletedUser = _db.Users.Remove(user).Entity;
+                await _db.SaveChangesAsync();
+
+                return new ServiceResponse<Data.Entities.User>()
+                {
+                    IsSuccess = deletedUser != null,
+                    Data = deletedUser,
+                    Message = deletedUser != null ? $"User (id:{id}) deleted" : "User not found",
+                    Time = now,
+                };
+            }
+            catch (Exception e)
+            {
+                return new ServiceResponse<Data.Entities.User>()
+                {
+                    IsSuccess = false,
+                    Data = null,
+                    Message = $"{e.Message} {Environment.NewLine}" +
+                              $"{e.InnerException?.Message}",
+                    Time = now
+                };
+            }
+            
         }
 
         public async Task<bool> IsIdenticalEntityAsync(Data.Entities.User user)
         {
-            if (await _repository.Find(
+            if (await _db.Users.FirstOrDefaultAsync(
                 u => (u.Email.ToLower() == user.Email.ToLower()
                      || u.Username.ToLower() == user.Username.ToLower()) 
                      && u.Id != user.Id) != null)

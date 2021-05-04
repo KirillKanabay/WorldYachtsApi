@@ -1,4 +1,6 @@
-﻿namespace WorldYachtsApi.Models
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace WorldYachtsApi.Models
 {
     public class SalesPersonModel:UserModel
     {
@@ -8,5 +10,7 @@
         public string Email { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
+
+        public string Role => "Sales Person";
     }
 }

@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
@@ -99,17 +99,19 @@ namespace WorldYachtsApi.Controllers
         [Authorize("Admin")]
         public async Task<IActionResult> Put(int id, [FromBody] SalesPerson salesPerson)
         {
-            var response = await _salesPersonService.UpdateAsync(id, salesPerson);
-
-            _logger.LogInformation($"Updating sales person (id:{id})");
-
-            if (!response.IsSuccess)
+            var sp = _mapper.Map<SalesPerson>(salesPerson);   
+            //Обновляем данные менеджера в БД
+            _logger.LogInformation($"Update sales person(First name:{salesPerson.FirstName}, Second name: {salesPerson.SecondName})");
+            
+            var salesPersonResponse = await _salesPersonService.UpdateAsync(id, sp);
+            
+            if (!salesPersonResponse.IsSuccess)
             {
-                _logger.LogError(response.Message);
-                return BadRequest(response.Message);
+                _logger.LogError(salesPersonResponse.Message);
+                return BadRequest(salesPersonResponse.Message);
             }
 
-            return Ok(response.Data);
+            return Ok(salesPersonResponse.Data);
         }
 
         // DELETE api/<SalesPersonController>/5
@@ -124,6 +126,9 @@ namespace WorldYachtsApi.Controllers
                 _logger.LogError(response.Message);
                 return BadRequest(response.Message);
             }
+
+            var user = _userService.GetAll().FirstOrDefault(u => u.UserId == id);
+            var userResponse = await _userService.DeleteAsync(user.Id);
 
             return Ok(response.Data);
         }

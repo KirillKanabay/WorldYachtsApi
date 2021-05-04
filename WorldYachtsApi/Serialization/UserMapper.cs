@@ -33,10 +33,22 @@ namespace WorldYachtsApi.Serialization
                 .ForMember(dst => dst.Id, opt => opt.Ignore())
                 ;
 
+            //SalesPerson -> SalesPerson
+            CreateMap<SalesPerson, SalesPerson>()
+                .ForMember(dst => dst.FirstName, opt => opt.MapFrom(src => src.FirstName))
+                .ForMember(dst => dst.SecondName, opt => opt.MapFrom(src => src.SecondName))
+                ;
+
             //SalesPersonModel -> SalesPerson
             CreateMap<SalesPersonModel, SalesPerson>()
                 .ForMember(dst => dst.FirstName, opt => opt.MapFrom(src => src.FirstName))
                 .ForMember(dst => dst.SecondName, opt => opt.MapFrom(src => src.SecondName))
+                ;
+
+            CreateMap<User, User>()
+                .ForMember(dst => dst.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dst => dst.Password, opt => opt.MapFrom(src => src.Password))
+                .ForMember(dst => dst.Username, opt => opt.MapFrom(src => src.Username))
                 ;
 
             //SalesPersonModel -> User
