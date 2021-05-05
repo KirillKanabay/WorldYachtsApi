@@ -13,6 +13,7 @@ using WorldYachts.Services.Boats;
 using WorldYachts.Services.BoatTypes;
 using WorldYachts.Services.BoatWood;
 using WorldYachts.Services.BoatWoods;
+using WorldYachts.Services.Contracts;
 using WorldYachts.Services.Customers;
 using WorldYachts.Services.OrderDetails;
 using WorldYachts.Services.Orders;
@@ -49,7 +50,8 @@ using WorldYachtsApi.Serialization;
                 typeof(UserMapper),
                 typeof(BoatMapper),
                 typeof(AccessoryMapper),
-                typeof(OrderMapper)
+                typeof(OrderMapper),
+                typeof(ContractMapper)
                 );
 
             //Сервис контроллеров
@@ -78,6 +80,7 @@ using WorldYachtsApi.Serialization;
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IOrderDetailService, OrderDetailService>();
             services.AddScoped<IPartnerService, PartnerService>();
+            services.AddScoped<IContractService, ContractService>();
 
             #endregion
 
@@ -96,11 +99,7 @@ using WorldYachtsApi.Serialization;
             app.UseRouting();
 
             app.UseResponseCaching();
-            
-            //app.UseAuthentication();
 
-            //app.UseAuthorization();
-            
             app.UseMiddleware<JwtMiddleware>();
             
             app.UseEndpoints(endpoints =>
