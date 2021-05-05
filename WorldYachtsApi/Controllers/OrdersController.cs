@@ -3,7 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WorldYachts.Data.Entities;
-using WorldYachts.Services.Order;
+using WorldYachts.Services.Orders;
 using WorldYachtsApi.Helpers;
 using WorldYachtsApi.Models;
 

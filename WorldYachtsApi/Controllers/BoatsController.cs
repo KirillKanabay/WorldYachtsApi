@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
 using WorldYachts.Data.Entities;
-using WorldYachts.Services.Boat;
+using WorldYachts.Services.Boats;
 using WorldYachtsApi.Helpers;
 using WorldYachtsApi.Models;
 

@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using WorldYachts.Data.Entities;
-using WorldYachts.Services.Admin;
-using WorldYachts.Services.Customer;
+using WorldYachts.Services.Admins;
+using WorldYachts.Services.Authenticate;
+using WorldYachts.Services.Customers;
 using WorldYachts.Services.Models;
-using WorldYachts.Services.Models.Authenticate;
-using WorldYachts.Services.SalesPerson;
-using WorldYachts.Services.User;
+using WorldYachts.Services.SalesPersons;
+using WorldYachts.Services.Users;
 using WorldYachtsApi.Helpers;
 using WorldYachtsApi.Models;
 

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WorldYachts.Services.Models.Authenticate
+namespace WorldYachts.Services.Authenticate
 {
     public class AuthenticateRequest
     {

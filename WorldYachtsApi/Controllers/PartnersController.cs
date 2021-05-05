@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Logging;
 using WorldYachts.Data;
 using WorldYachts.Data.Entities;
-using WorldYachts.Services.Partner;
+using WorldYachts.Services.Partners;
 using WorldYachtsApi.Helpers;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860

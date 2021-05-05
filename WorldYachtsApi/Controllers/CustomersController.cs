@@ -4,8 +4,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WorldYachts.Data.Entities;
-using WorldYachts.Services.Customer;
-using WorldYachts.Services.User;
+using WorldYachts.Services.Customers;
+using WorldYachts.Services.Users;
 using WorldYachtsApi.Helpers;
 using WorldYachtsApi.Models;
 

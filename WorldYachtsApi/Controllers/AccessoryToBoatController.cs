@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using WorldYachts.Data.Entities;
-using WorldYachts.Services.AccessoryToBoat;
+using WorldYachts.Services.AccessoriesToBoat;
 using WorldYachts.Services.BoatWood;
 using WorldYachtsApi.Helpers;
 using WorldYachtsApi.Models;

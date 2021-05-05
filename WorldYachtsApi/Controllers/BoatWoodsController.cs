@@ -5,8 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using WorldYachts.Data.Entities;
-using WorldYachts.Services.BoatType;
 using WorldYachts.Services.BoatWood;
+using WorldYachts.Services.BoatWoods;
 using WorldYachtsApi.Helpers;
 using WorldYachtsApi.Models;
 

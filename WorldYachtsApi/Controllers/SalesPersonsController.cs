@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
 using WorldYachts.Data.Entities;
-using WorldYachts.Services.SalesPerson;
-using WorldYachts.Services.User;
+using WorldYachts.Services.SalesPersons;
+using WorldYachts.Services.Users;
 using WorldYachtsApi.Helpers;
 using WorldYachtsApi.Models;
 
