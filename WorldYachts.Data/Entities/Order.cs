@@ -49,7 +49,7 @@ namespace WorldYachts.Data.Entities
         public int Status { get; set; }
 
         #region Связи
-
+        public virtual Contract Contract { get; set; }
         /// <summary>
         /// Ссылка на менеджера
         /// </summary>

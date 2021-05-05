@@ -8,7 +8,6 @@ using WorldYachts.Data.Entities;
 using WorldYachts.Services.Admins;
 using WorldYachts.Services.Authenticate;
 using WorldYachts.Services.Customers;
-using WorldYachts.Services.Models;
 using WorldYachts.Services.SalesPersons;
 using WorldYachts.Services.Users;
 using WorldYachtsApi.Helpers;

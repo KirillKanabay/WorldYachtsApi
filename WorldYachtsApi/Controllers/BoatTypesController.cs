@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using WorldYachts.Data.Entities;
 using WorldYachts.Services.BoatTypes;
-using WorldYachts.Services.Models;
 using WorldYachtsApi.Helpers;
 using WorldYachtsApi.Models;
 

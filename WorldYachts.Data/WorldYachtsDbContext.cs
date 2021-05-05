@@ -125,6 +125,14 @@ namespace WorldYachts.Data
                 .HasForeignKey(o => o.SalesPersonId);
             #endregion
 
+            #region Contract
+
+            modelBuilder.Entity<Contract>()
+                .HasOne(c => c.Order)
+                .WithOne(o => o.Contract);
+
+            #endregion
+
             #endregion
             modelBuilder.SeedAdmins();
             modelBuilder.SeedSalesPersons();

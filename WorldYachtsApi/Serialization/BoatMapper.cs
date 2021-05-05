@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using WorldYachts.Data.Entities;
-using WorldYachts.Services.Models;
 using WorldYachtsApi.Models;
 
 namespace WorldYachtsApi.Serialization
