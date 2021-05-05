@@ -11,6 +11,5 @@ namespace WorldYachts.Services.Contracts
         Task<ServiceResponse<Contract>> GetByIdAsync(int id);
         Task<ServiceResponse<Contract>> UpdateAsync(int id, Contract contract);
         Task<ServiceResponse<Contract>> DeleteAsync(int id);
-        Task<bool> IsIdenticalEntityAsync(Contract contract);
     }
 }

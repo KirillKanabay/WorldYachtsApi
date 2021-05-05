@@ -57,6 +57,11 @@ namespace WorldYachts.Data
         /// Таблица деталей заказа
         /// </summary>
         public DbSet<OrderDetail> OrderDetails { get; set; }
+        
+        /// <summary>
+        /// Таблица контрактов
+        /// </summary>
+        public DbSet<Contract> Contracts { get; set; }
 
         #endregion
 
