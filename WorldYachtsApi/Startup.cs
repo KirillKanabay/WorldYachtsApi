@@ -52,7 +52,8 @@ using WorldYachtsApi.Serialization;
                 typeof(BoatMapper),
                 typeof(AccessoryMapper),
                 typeof(OrderMapper),
-                typeof(ContractMapper)
+                typeof(ContractMapper),
+                typeof(InvoiceMapper)
                 );
 
             //Сервис контроллеров
