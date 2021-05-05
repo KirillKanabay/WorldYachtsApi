@@ -15,6 +15,7 @@ using WorldYachts.Services.BoatWood;
 using WorldYachts.Services.BoatWoods;
 using WorldYachts.Services.Contracts;
 using WorldYachts.Services.Customers;
+using WorldYachts.Services.Invoices;
 using WorldYachts.Services.OrderDetails;
 using WorldYachts.Services.Orders;
 using WorldYachts.Services.Partners;
@@ -81,6 +82,7 @@ using WorldYachtsApi.Serialization;
             services.AddScoped<IOrderDetailService, OrderDetailService>();
             services.AddScoped<IPartnerService, PartnerService>();
             services.AddScoped<IContractService, ContractService>();
+            services.AddScoped<IInvoiceService, InvoiceService>();
 
             #endregion
 

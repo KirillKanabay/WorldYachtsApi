@@ -41,6 +41,8 @@ namespace WorldYachts.Data.Entities
         /// Ссылка на доставку
         /// </summary>
         [ForeignKey("OrderId")]
-        public Order Order { get; set; }
+        public virtual Order Order { get; set; }
+
+        public virtual Invoice Invoice { get; set; }
     }
 }

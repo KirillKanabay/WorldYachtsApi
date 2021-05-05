@@ -63,6 +63,10 @@ namespace WorldYachts.Data
         /// </summary>
         public DbSet<Contract> Contracts { get; set; }
 
+        /// <summary>
+        /// Таблица счетов
+        /// </summary>
+        public DbSet<Invoice> Invoices { get; set; }
         #endregion
 
         public WorldYachtsDbContext(DbContextOptions<WorldYachtsDbContext> options) : base(options)
@@ -130,6 +134,14 @@ namespace WorldYachts.Data
             modelBuilder.Entity<Contract>()
                 .HasOne(c => c.Order)
                 .WithOne(o => o.Contract);
+
+            #endregion
+
+            #region Invoice
+
+            modelBuilder.Entity<Invoice>()
+                .HasOne(i => i.Contract)
+                .WithOne(c => c.Invoice);
 
             #endregion
 
